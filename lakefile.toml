@@ -1,0 +1,16 @@
+name = "Fokker_challenge"
+version = "0.1.0"
+defaultTargets = ["fokker_challenge"]
+
+[[lean_lib]]
+name = "FokkerChallenge"
+
+[[lean_exe]]
+name = "fokker_challenge"
+root = "Main"
+
+[[require]]
+name = "cslib"
+scope = "leanprover"
+rev = "main"
+
