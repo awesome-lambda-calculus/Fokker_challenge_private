@@ -1,6 +1,7 @@
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.Basic
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBeta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.Congruence
+import FokkerChallenge.EnhancedCslib.Basic
 import Mathlib.Data.Finset.Lattice.Basic
 
 namespace Cslib
@@ -13,7 +14,7 @@ def fokker_size : (Term String) -> Nat
 | abs t => 1 + fokker_size t
 | app t1 t2 => 1 + fokker_size t1 + fokker_size t2
 
-def fokker_size_openrec {x M}: (i: Nat) -> (openRec i (fvar x) M).fokker_size = M.fokker_size := by
+theorem fokker_size_openrec {x M}: (i: Nat) -> (openRec i (fvar x) M).fokker_size = M.fokker_size := by
 induction M with (unfold openRec fokker_size; grind)
 
 def toStringTerm {α} [ToString α] : Term α → String
@@ -63,6 +64,9 @@ decreasing_by
   all_goals simp_wf
   all_goals omega
 
+def r_preserves (f: Term String -> Bool) (R : Term String → Term String → Prop) : Prop :=
+  ∀ M N, R M N → f M → f N
+
 def no_redex: Term String → Bool
   | Term.bvar _ => true
   | Term.fvar _ => true
@@ -111,6 +115,12 @@ induction M with
 -/
 def K : Term String := abs (abs (bvar 1))
 
+def S : Term String :=
+abs (abs (abs (
+    app (app (bvar 2) (bvar 0))   -- x z
+        (app (bvar 1) (bvar 0))   -- y z
+  )))
+
 /-
   omega = λx y. x
 -/
@@ -122,48 +132,6 @@ def omega : Term String := abs (app (bvar 0) (bvar 0))
 inductive Gen (Y: Term String) : Term String → Prop where
   | base : Gen Y Y
   | app {M N}  : Gen Y M → Gen Y N → Gen Y (app M N)
-
-theorem openRec_fv_cases {M N: Term String} :
-(i: Nat) ->
-(openRec i N M).fv = M.fv \/
-(openRec i N M).fv = M.fv ∪ N.fv := by
-induction M with unfold openRec
-| bvar _ => intros i
-            split
-            simp
-            tauto
-| fvar _ => tauto
-| abs _ ih => intros i
-              conv =>
-                lhs
-                unfold fv
-              conv =>
-                rhs
-                lhs
-                unfold fv
-              conv =>
-                rhs
-                rhs
-                lhs
-                unfold fv
-              apply ih
-| app a b iha ihb =>  intros i
-                      conv =>
-                        lhs
-                        unfold fv
-                      conv =>
-                        rhs
-                        lhs
-                        unfold fv
-                      conv =>
-                        rhs
-                        rhs
-                        lhs
-                        unfold fv
-                      specialize iha i
-                      specialize ihb i
-                      cases iha <;> cases ihb <;> grind
-
 
 end Term
 

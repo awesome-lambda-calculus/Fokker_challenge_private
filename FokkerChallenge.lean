@@ -7,6 +7,8 @@ import FokkerChallenge.FvarSubset
 import FokkerChallenge.GenTermsComplete
 import FokkerChallenge.EnhancedCslib.AbsMustExists
 import FokkerChallenge.EnhancedCslib.DoubleEta
+import FokkerChallenge.EnhancedCslib.Basic
 import FokkerChallenge.Decider.NoDuplicate
 import FokkerChallenge.Decider.EveryBvarUsed
-import FokkerChallenge.Decider.TwoVarsAreNotEnough
+import FokkerChallenge.Decider.All0
+-- import FokkerChallenge.Decider.TwoVarsAreNotEnough

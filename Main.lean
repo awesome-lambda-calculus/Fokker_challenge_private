@@ -34,6 +34,7 @@ def main : IO Unit := do
   -- IO.println s!"Solution: {len}"
 
   terms := terms.filter (fun t => !Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.no_duplicate t)
+  terms := terms.filter (fun t => !Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.all0_no_fvar_inside_abs t)
   let len := terms.length
   IO.println s!"{len} undecided"
   IO.println s!"{terms}"
