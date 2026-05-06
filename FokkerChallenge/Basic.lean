@@ -35,35 +35,6 @@ def toStringTerm {α} [ToString α] : Term α → String
 
 instance {α} [ToString α] : ToString (Term α) := ⟨toStringTerm⟩
 
-def gen_terms : Nat → Nat → Nat → List (Term String)
-  | 0, 0, depth => (List.range depth).map Term.bvar
-  | lams, apps, depth =>
-      let lambda_terms := if lams > 0 then
-        (gen_terms (lams - 1) apps (depth + 1)).map Term.abs
-      else
-        []
-
-      let app_terms := if apps > 0 then
-        (List.range (lams + 1)).attach.flatMap fun ⟨left_l_nat, hl⟩ =>
-        (List.range apps).attach.flatMap fun ⟨left_a_nat, ha⟩ =>
-        let left_l  := left_l_nat
-        let left_a  := left_a_nat
-        let right_l := lams - left_l
-        let right_a := apps - 1 - left_a
-        -- The two `have`s below feed bounds to `decreasing_by`.
-        have _hl : left_l_nat < lams + 1 := List.mem_range.mp hl
-        have _ha : left_a_nat < apps := List.mem_range.mp ha
-        (gen_terms left_l left_a depth).flatMap fun left =>
-        (gen_terms right_l right_a depth).map fun right =>
-        Term.app left right
-      else
-        []
-      lambda_terms ++ app_terms
-termination_by lams apps _ => lams + apps
-decreasing_by
-  all_goals simp_wf
-  all_goals omega
-
 def r_preserves (f: Term String -> Bool) (R : Term String → Term String → Prop) : Prop :=
   ∀ M N, R M N → f M → f N
 

@@ -4,7 +4,7 @@ import FokkerChallenge.Basic
 import FokkerChallenge.CountBvar
 import FokkerChallenge.CountFvar
 import FokkerChallenge.FvarSubset
-import FokkerChallenge.GenTermsComplete
+import FokkerChallenge.GenTerms
 import FokkerChallenge.EnhancedCslib.AbsMustExists
 import FokkerChallenge.EnhancedCslib.DoubleEta
 import FokkerChallenge.EnhancedCslib.Basic

@@ -5,6 +5,35 @@ namespace Cslib
 
 namespace LambdaCalculus.LocallyNameless.Untyped.Term
 
+def gen_terms : Nat → Nat → Nat → List (Term String)
+  | 0, 0, depth => (List.range depth).map Term.bvar
+  | lams, apps, depth =>
+      let lambda_terms := if lams > 0 then
+        (gen_terms (lams - 1) apps (depth + 1)).map Term.abs
+      else
+        []
+
+      let app_terms := if apps > 0 then
+        (List.range (lams + 1)).attach.flatMap fun ⟨left_l_nat, hl⟩ =>
+        (List.range apps).attach.flatMap fun ⟨left_a_nat, ha⟩ =>
+        let left_l  := left_l_nat
+        let left_a  := left_a_nat
+        let right_l := lams - left_l
+        let right_a := apps - 1 - left_a
+        -- The two `have`s below feed bounds to `decreasing_by`.
+        have _hl : left_l_nat < lams + 1 := List.mem_range.mp hl
+        have _ha : left_a_nat < apps := List.mem_range.mp ha
+        (gen_terms left_l left_a depth).flatMap fun left =>
+        (gen_terms right_l right_a depth).map fun right =>
+        Term.app left right
+      else
+        []
+      lambda_terms ++ app_terms
+termination_by lams apps _ => lams + apps
+decreasing_by
+  all_goals simp_wf
+  all_goals omega
+
 /-- Number of `abs` constructors in a term. -/
 def abs_count : Term String → Nat
   | bvar _ => 0
@@ -118,6 +147,46 @@ theorem gen_terms_complete : ∀ (M : Term String) (d : Nat),
         have hRa : (1 + L.app_count + R.app_count) - 1 - L.app_count = R.app_count := by omega
         simp only [hRl, hRa]
         exact List.mem_map_of_mem ihR'
+
+def terms_fokker_lt_7: List (Term String) :=
+      Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 0 0 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 1 0 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 0 1 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 2 0 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 1 1 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 0 2 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 3 0 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 2 1 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 1 2 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 0 3 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 4 0 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 3 1 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 2 2 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 1 3 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 0 4 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 5 0 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 4 1 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 3 2 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 2 3 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 1 4 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 0 5 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 6 0 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 5 1 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 4 2 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 3 3 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 2 4 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 1 5 0
+   ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 0 6 0
+
+-- 表述可以改变
+theorem gen_terms_spec: ∀ (M : Term String) (abs_count app_count: Nat),
+  M.abs_count = abs_count ->
+  M.app_count = app_count ->
+  (M.fv = ∅ /\ M.LC) ↔ M ∈ gen_terms abs_count app_count 0 := by
+sorry
+
+theorem closed_lc_iff_mem_gen_terms (M: Term String): (M.LC /\ M.fv = ∅ /\ M.fokker_size < 7) ↔ M ∈ terms_fokker_lt_7 := by
+sorry
 
 end Term
 
