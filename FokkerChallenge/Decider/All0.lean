@@ -20,17 +20,7 @@ def all0: Term String -> Bool
   | Term.app t1 t2 => all0 t1 && all0 t2
 
 def all0_openrec {M N}: (i: Nat) -> all0 N -> all0 M -> all0 (openRec i N M) := by
-induction M with
-| bvar _ => grind
-| fvar _ => grind
-| app _ _ _ _ =>  intros i h
-                  unfold openRec
-                  simp [all0]
-                  grind
-| abs M ih => intros i h
-              unfold openRec
-              simp [all0]
-              grind
+induction M with grind [openRec, all0]
 
 def all0_no_bvar_above_zero {M}: (i: Nat) -> i > 0 -> M.all0 -> count_bvar i M = 0 := by
 induction M with grind [count_bvar, all0]
