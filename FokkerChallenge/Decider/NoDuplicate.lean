@@ -113,10 +113,7 @@ induction M with
                     specialize hb x i (by tauto)
                     tauto
 
-def r_preserves_no_duplicate (R : Term String → Term String → Prop) : Prop :=
-  ∀ M N, R M N → no_duplicate M → no_duplicate N
-
-theorem beta_preserves_no_duplicate: r_preserves_no_duplicate Beta := by
+theorem beta_preserves_no_duplicate: r_preserves no_duplicate Beta := by
 intros M N hmn hnd
 cases hmn
 rename_i M N h lcn
@@ -128,7 +125,7 @@ simp at g
 apply open_no_duplicate
 all_goals tauto
 
-theorem eta_preserves_no_duplicate: r_preserves_no_duplicate Eta := by
+theorem eta_preserves_no_duplicate: r_preserves no_duplicate Eta := by
 intros M N hmn hnd
 cases hmn
 rename_i lcn
@@ -254,8 +251,8 @@ induction hxi with
 theorem xi_preserves_no_duplicate {R: Term String → Term String → Prop} :
   r_preserves_fvar R ->
   r_preserves_fvar_subset R ->
-  r_preserves_no_duplicate R →
-  r_preserves_no_duplicate (Xi R) := by
+  r_preserves no_duplicate R →
+  r_preserves no_duplicate (Xi R) := by
 intros _ g hR M N hxi hnd
 induction hxi with
 | base _ => tauto

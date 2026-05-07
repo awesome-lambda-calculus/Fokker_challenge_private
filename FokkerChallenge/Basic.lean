@@ -1,6 +1,7 @@
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.Basic
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBeta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.Congruence
+import FokkerChallenge.EnhancedCslib.Basic
 import Mathlib.Data.Finset.Lattice.Basic
 
 namespace Cslib
@@ -13,7 +14,7 @@ def fokker_size : (Term String) -> Nat
 | abs t => 1 + fokker_size t
 | app t1 t2 => 1 + fokker_size t1 + fokker_size t2
 
-def fokker_size_openrec {x M}: (i: Nat) -> (openRec i (fvar x) M).fokker_size = M.fokker_size := by
+theorem fokker_size_openrec {x M}: (i: Nat) -> (openRec i (fvar x) M).fokker_size = M.fokker_size := by
 induction M with (unfold openRec fokker_size; grind)
 
 def toStringTerm {α} [ToString α] : Term α → String
@@ -34,34 +35,8 @@ def toStringTerm {α} [ToString α] : Term α → String
 
 instance {α} [ToString α] : ToString (Term α) := ⟨toStringTerm⟩
 
-def gen_terms : Nat → Nat → Nat → List (Term String)
-  | 0, 0, depth => (List.range depth).map Term.bvar
-  | lams, apps, depth =>
-      let lambda_terms := if lams > 0 then
-        (gen_terms (lams - 1) apps (depth + 1)).map Term.abs
-      else
-        []
-
-      let app_terms := if apps > 0 then
-        (List.range (lams + 1)).attach.flatMap fun ⟨left_l_nat, hl⟩ =>
-        (List.range apps).attach.flatMap fun ⟨left_a_nat, ha⟩ =>
-        let left_l  := left_l_nat
-        let left_a  := left_a_nat
-        let right_l := lams - left_l
-        let right_a := apps - 1 - left_a
-        -- The two `have`s below feed bounds to `decreasing_by`.
-        have _hl : left_l_nat < lams + 1 := List.mem_range.mp hl
-        have _ha : left_a_nat < apps := List.mem_range.mp ha
-        (gen_terms left_l left_a depth).flatMap fun left =>
-        (gen_terms right_l right_a depth).map fun right =>
-        Term.app left right
-      else
-        []
-      lambda_terms ++ app_terms
-termination_by lams apps _ => lams + apps
-decreasing_by
-  all_goals simp_wf
-  all_goals omega
+def r_preserves (f: Term String -> Bool) (R : Term String → Term String → Prop) : Prop :=
+  ∀ M N, R M N → f M → f N
 
 def no_redex: Term String → Bool
   | Term.bvar _ => true
@@ -111,6 +86,12 @@ induction M with
 -/
 def K : Term String := abs (abs (bvar 1))
 
+def S : Term String :=
+abs (abs (abs (
+    app (app (bvar 2) (bvar 0))   -- x z
+        (app (bvar 1) (bvar 0))   -- y z
+  )))
+
 /-
   omega = λx y. x
 -/
@@ -122,48 +103,6 @@ def omega : Term String := abs (app (bvar 0) (bvar 0))
 inductive Gen (Y: Term String) : Term String → Prop where
   | base : Gen Y Y
   | app {M N}  : Gen Y M → Gen Y N → Gen Y (app M N)
-
-theorem openRec_fv_cases {M N: Term String} :
-(i: Nat) ->
-(openRec i N M).fv = M.fv \/
-(openRec i N M).fv = M.fv ∪ N.fv := by
-induction M with unfold openRec
-| bvar _ => intros i
-            split
-            simp
-            tauto
-| fvar _ => tauto
-| abs _ ih => intros i
-              conv =>
-                lhs
-                unfold fv
-              conv =>
-                rhs
-                lhs
-                unfold fv
-              conv =>
-                rhs
-                rhs
-                lhs
-                unfold fv
-              apply ih
-| app a b iha ihb =>  intros i
-                      conv =>
-                        lhs
-                        unfold fv
-                      conv =>
-                        rhs
-                        lhs
-                        unfold fv
-                      conv =>
-                        rhs
-                        rhs
-                        lhs
-                        unfold fv
-                      specialize iha i
-                      specialize ihb i
-                      cases iha <;> cases ihb <;> grind
-
 
 end Term
 

@@ -123,9 +123,6 @@ induction M with
                   omega
 
 
-def r_preserves_every_bvar_used (R : Term String → Term String → Prop) : Prop :=
-  ∀ M N, R M N → every_bvar_used M → every_bvar_used N
-
 /-
 theorem r_preserves_every_bvar_used_sup {r1 r2 : Term String → Term String → Prop} :
   r_preserves_every_bvar_used r1 → r_preserves_every_bvar_used r2 → r_preserves_every_bvar_used (r1 ⊔ r2) := by
@@ -138,7 +135,7 @@ cases h with
 /-
   β preserves every_bvar_used
 -/
-theorem beta_preserves_every_bvar_used: r_preserves_every_bvar_used Beta := by
+theorem beta_preserves_every_bvar_used: r_preserves every_bvar_used Beta := by
   intro M N h g
   cases h
   rename_i m n hm hn
@@ -149,7 +146,7 @@ theorem beta_preserves_every_bvar_used: r_preserves_every_bvar_used Beta := by
   simp at h1
   apply open_every_bvar_used <;> tauto
 
-theorem eta_preserves_every_bvar_used: r_preserves_every_bvar_used Eta := by
+theorem eta_preserves_every_bvar_used: r_preserves every_bvar_used Eta := by
   intro M N h g
   cases h
   unfold every_bvar_used at g
@@ -264,7 +261,7 @@ conv =>
 simp
 
 theorem xi_preserves_every_bvar_used {R: Term String → Term String → Prop} :
-  r_preserves_every_bvar_used R -> r_preserves_free_vars R → r_preserves_every_bvar_used (Xi R) := by
+  r_preserves every_bvar_used R -> r_preserves_free_vars R → r_preserves every_bvar_used (Xi R) := by
 intro h8 h9 M N h g
 induction h with
 | base h => apply h8 <;> assumption

@@ -37,15 +37,15 @@ When all normal forms are checked, we will turn to non normal forms.
 
 ## Waht we have Done
 
-We have formalize two simple deciders, which have proven 1421 terms could not be basis.
+We have formalize 3 simple deciders, which have proven 1421 terms could not be basis.
 
 ## What we are going to do 
-There are still 1264 terms undecided:
+There are still 1180 terms undecided:
 
 ```
 $ lake exe fokker_challenge
 
-1264 undecided
+1180 undecided
 ```
 
 We might prove them one by one, or discover new deciders.
@@ -76,3 +76,8 @@ This project is quite suitable for AI-Driven Autonomous Proof.
 - https://esolangs.org/wiki/Closed_lambda_term
 - https://github.com/tromp/AIT/blob/master/Bases.lhs
 
+
+## Contributors ✨
+
+<!-- ALL-CONTRIBUTORS-LIST:START -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
