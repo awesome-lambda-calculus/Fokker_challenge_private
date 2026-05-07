@@ -1,5 +1,7 @@
 import FokkerChallenge.Basic
 import FokkerChallenge.CountBvar
+import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.LcAt
+import Mathlib.Tactic.IntervalCases
 
 namespace Cslib
 
@@ -178,15 +180,195 @@ def terms_fokker_lt_7: List (Term String) :=
    ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 1 5 0
    ++ Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.gen_terms 0 6 0
 
--- 表述可以改变
-theorem gen_terms_spec: ∀ (M : Term String) (abs_count app_count: Nat),
-  M.abs_count = abs_count ->
-  M.app_count = app_count ->
-  (M.fv = ∅ /\ M.LC) ↔ M ∈ gen_terms abs_count app_count 0 := by
-sorry
+/-- `LcAt d M` is implied by `count_bvar k M = 0` for every `k ≥ d`. -/
+theorem lcAt_of_count_bvar_zero :
+    ∀ (M : Term String) (d : Nat),
+    (∀ k, k ≥ d → count_bvar k M = 0) → LcAt d M := by
+  intro M
+  induction M with
+  | bvar i =>
+    intro d hbv
+    show i < d
+    by_contra hi
+    have := hbv i (Nat.not_lt.mp hi)
+    simp [count_bvar] at this
+  | fvar _ => intro _ _; simp [LcAt]
+  | abs N ih =>
+    intro d hbv
+    show LcAt (d + 1) N
+    apply ih
+    intro k hk
+    have h := hbv (k - 1) (by omega)
+    -- count_bvar (k-1) (abs N) = count_bvar (k-1+1) N
+    change count_bvar (k - 1 + 1) N = 0 at h
+    have heq : k - 1 + 1 = k := by omega
+    rw [heq] at h
+    exact h
+  | app L R ihL ihR =>
+    intro d hbv
+    refine ⟨ihL d ?_, ihR d ?_⟩ <;> intro k hk
+    · have := hbv k hk; simp [count_bvar] at this; omega
+    · have := hbv k hk; simp [count_bvar] at this; omega
 
-theorem closed_lc_iff_mem_gen_terms (M: Term String): (M.LC /\ M.fv = ∅ /\ M.fokker_size < 7) ↔ M ∈ terms_fokker_lt_7 := by
-sorry
+/-- Soundness of `gen_terms`: every member of `gen_terms n_lams n_apps d` has empty free variables,
+    is `LcAt d`, and its abs/app counts equal `n_lams`/`n_apps`. -/
+theorem gen_terms_sound :
+    ∀ (tot : Nat) (n_lams n_apps : Nat),
+    n_lams + n_apps = tot →
+    ∀ (d : Nat) (M : Term String), M ∈ gen_terms n_lams n_apps d →
+    M.fv = ∅ ∧ LcAt d M ∧ M.abs_count = n_lams ∧ M.app_count = n_apps := by
+  intro tot
+  induction tot using Nat.strong_induction_on with | _ tot ih
+  intro n_lams n_apps htot d M hmem
+  by_cases hb : n_lams = 0 ∧ n_apps = 0
+  · -- Base case: gen_terms 0 0 d = (List.range d).map bvar
+    obtain ⟨hl, ha⟩ := hb
+    subst hl; subst ha
+    unfold gen_terms at hmem
+    rw [List.mem_map] at hmem
+    obtain ⟨a, ha, hab⟩ := hmem
+    rw [List.mem_range] at ha
+    subst hab
+    refine ⟨?_, ?_, ?_, ?_⟩
+    · simp [fv]
+    · show a < d; exact ha
+    · simp [abs_count]
+    · simp [app_count]
+  · -- Recursive case: at least one of n_lams, n_apps is positive
+    rw [gen_terms.eq_2 _ _ _ (by intro h; tauto)] at hmem
+    rcases List.mem_append.mp hmem with hlam | happ_mem
+    · -- M ∈ lambda_terms
+      split_ifs at hlam with hl_pos
+      · rw [List.mem_map] at hlam
+        obtain ⟨N, hN_mem, habs⟩ := hlam
+        subst habs
+        -- M = abs N, N ∈ gen_terms (n_lams - 1) n_apps (d + 1)
+        have hsmaller : (n_lams - 1) + n_apps < tot := by omega
+        have ihN := ih _ hsmaller (n_lams - 1) n_apps rfl (d + 1) N hN_mem
+        obtain ⟨hfv, hlc, habsN, happN⟩ := ihN
+        refine ⟨?_, ?_, ?_, ?_⟩
+        · simp [fv]; exact hfv
+        · show LcAt (d + 1) N; exact hlc
+        · show 1 + N.abs_count = n_lams; omega
+        · exact happN
+      · cases hlam
+    · -- M ∈ app_terms
+      split_ifs at happ_mem with happ_pos
+      · -- Decompose nested flatMap
+        rw [List.mem_flatMap] at happ_mem
+        obtain ⟨⟨left_l, hl_mem⟩, _, hmem2⟩ := happ_mem
+        rw [List.mem_flatMap] at hmem2
+        obtain ⟨⟨left_a, ha_mem⟩, _, hmem3⟩ := hmem2
+        rw [List.mem_flatMap] at hmem3
+        obtain ⟨left, hL_mem, hmem4⟩ := hmem3
+        rw [List.mem_map] at hmem4
+        obtain ⟨right, hR_mem, hM⟩ := hmem4
+        cases hM
+        rw [List.mem_range] at hl_mem
+        rw [List.mem_range] at ha_mem
+        -- left ∈ gen_terms left_l left_a d
+        -- right ∈ gen_terms (n_lams - left_l) (n_apps - 1 - left_a) d
+        have hsmaller_L : left_l + left_a < tot := by omega
+        have hsmaller_R : (n_lams - left_l) + (n_apps - 1 - left_a) < tot := by omega
+        have ihL_res := ih _ hsmaller_L left_l left_a rfl d left hL_mem
+        have ihR_res := ih _ hsmaller_R (n_lams - left_l) (n_apps - 1 - left_a) rfl d right hR_mem
+        obtain ⟨hfvL, hlcL, habsL, happL⟩ := ihL_res
+        obtain ⟨hfvR, hlcR, habsR, happR⟩ := ihR_res
+        refine ⟨?_, ?_, ?_, ?_⟩
+        · simp [fv, hfvL, hfvR]
+        · exact ⟨hlcL, hlcR⟩
+        · show left.abs_count + right.abs_count = n_lams
+          rw [habsL, habsR]; omega
+        · show 1 + left.app_count + right.app_count = n_apps
+          rw [happL, happR]; omega
+      · cases happ_mem
+
+-- 表述可以改变
+theorem gen_terms_spec : ∀ (M : Term String) (abs_count app_count : Nat),
+    M.abs_count = abs_count →
+    M.app_count = app_count →
+    ((M.fv = ∅ ∧ M.LC) ↔ M ∈ gen_terms abs_count app_count 0) := by
+  intro M abs_count app_count habs happ
+  constructor
+  · -- Forward: closed and LC ⇒ in gen_terms
+    rintro ⟨hfv, hlc⟩
+    have hbv : ∀ k, k ≥ 0 → count_bvar k M = 0 := by
+      intro k _
+      exact count_bvar_even_of_locally_closed hlc k
+    have h := gen_terms_complete M 0 hfv hbv
+    rw [habs, happ] at h
+    exact h
+  · -- Backward: in gen_terms ⇒ closed and LC
+    intro hmem
+    have hsound := gen_terms_sound (abs_count + app_count) abs_count app_count rfl 0 M hmem
+    obtain ⟨hfv, hlc0, _, _⟩ := hsound
+    refine ⟨hfv, ?_⟩
+    rw [← lcAt_iff_LC]
+    exact hlc0
+
+/-- Auxiliary: every `gen_terms a b 0` with `a + b < 7` consists of closed locally closed terms
+of Fokker size `< 7`. -/
+private theorem closed_lc_of_mem_gen_terms_aux (M : Term String) (a b : Nat)
+    (hab : a + b < 7) (hmem : M ∈ gen_terms a b 0) :
+    M.LC ∧ M.fv = ∅ ∧ M.fokker_size < 7 := by
+  have hsound := gen_terms_sound (a + b) a b rfl 0 M hmem
+  obtain ⟨hfv, hlc0, habs, happ⟩ := hsound
+  refine ⟨?_, hfv, ?_⟩
+  · rw [← lcAt_iff_LC]; exact hlc0
+  · rw [fokker_size_eq_abs_count_add_app_count, habs, happ]; exact hab
+
+set_option maxHeartbeats 1000000 in
+theorem closed_lc_iff_mem_gen_terms (M : Term String) :
+    (M.LC ∧ M.fv = ∅ ∧ M.fokker_size < 7) ↔ M ∈ terms_fokker_lt_7 := by
+  constructor
+  · rintro ⟨hlc, hfv, hsz⟩
+    have hsz' : M.abs_count + M.app_count < 7 := by
+      rw [← fokker_size_eq_abs_count_add_app_count]; exact hsz
+    have hmem_gen := (gen_terms_spec M M.abs_count M.app_count rfl rfl).mp ⟨hfv, hlc⟩
+    -- Generalize counts to plain naturals to enable interval_cases.
+    set a := M.abs_count with ha_def
+    set b := M.app_count with hb_def
+    clear_value a b
+    unfold terms_fokker_lt_7
+    have ha_le : a ≤ 6 := by omega
+    have hb_le : b ≤ 6 := by omega
+    interval_cases a <;> interval_cases b <;>
+      first
+        | (exfalso; omega)
+        | (simp only [List.mem_append]; tauto)
+  · intro hmem
+    unfold terms_fokker_lt_7 at hmem
+    simp only [List.mem_append, or_assoc] at hmem
+    rcases hmem with h | h | h | h | h | h | h | h | h | h | h | h | h | h |
+      h | h | h | h | h | h | h | h | h | h | h | h | h | h
+    · exact closed_lc_of_mem_gen_terms_aux M 0 0 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 1 0 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 0 1 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 2 0 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 1 1 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 0 2 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 3 0 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 2 1 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 1 2 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 0 3 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 4 0 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 3 1 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 2 2 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 1 3 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 0 4 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 5 0 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 4 1 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 3 2 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 2 3 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 1 4 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 0 5 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 6 0 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 5 1 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 4 2 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 3 3 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 2 4 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 1 5 (by omega) h
+    · exact closed_lc_of_mem_gen_terms_aux M 0 6 (by omega) h
 
 end Term
 
