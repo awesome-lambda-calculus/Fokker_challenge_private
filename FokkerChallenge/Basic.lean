@@ -17,24 +17,6 @@ def fokker_size : (Term String) -> Nat
 theorem fokker_size_openrec {x M}: (i: Nat) -> (openRec i (fvar x) M).fokker_size = M.fokker_size := by
 induction M with (unfold openRec fokker_size; grind)
 
-def toStringTerm {α} [ToString α] : Term α → String
-  | bvar n => toString n
-  | fvar x => toString x
-  | abs t => "λ" ++ toStringTerm t
-  | app t1 t2 =>
-      let s1 :=
-        match t1 with
-        | abs _ => "(" ++ toStringTerm t1 ++ ")"
-        | _     => toStringTerm t1
-      let s2 :=
-        match t2 with
-        | app _ _ => "(" ++ toStringTerm t2 ++ ")"
-        | abs _   => "(" ++ toStringTerm t2 ++ ")"
-        | _       => toStringTerm t2
-      s1 ++ " " ++ s2
-
-instance {α} [ToString α] : ToString (Term α) := ⟨toStringTerm⟩
-
 def r_preserves (f: Term String -> Bool) (R : Term String → Term String → Prop) : Prop :=
   ∀ M N, R M N → f M → f N
 
