@@ -283,7 +283,6 @@ theorem gen_terms_sound :
           rw [happL, happR]; omega
       · cases happ_mem
 
--- 表述可以改变
 theorem gen_terms_spec : ∀ (M : Term String) (abs_count app_count : Nat),
     M.abs_count = abs_count →
     M.app_count = app_count →
