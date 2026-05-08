@@ -1,6 +1,6 @@
 # Fokker_challenge
 
-The currently known smallest one-point basis for untyped lambda calculus (in terms of **Fokker size**) is **α** , discovered by John Tromp.
+The currently known smallest one-point basis[^6] for untyped lambda calculus (in terms of **Fokker size**) is **α** , discovered by John Tromp[^4].
 
 ```
 α = λλλ2 0 (1 (λ1))
@@ -39,6 +39,10 @@ When all normal forms are checked, we will turn to non normal forms.
 
 We have formalize 3 simple deciders, which have proven 1421 terms could not be basis.
 
+- Decider/EveryBvarUsed.lean: If every var is used, it couldn't be basis: unable to discard variable
+- Decider/NoDuplicate.lean: If every var is used only 0 times or 1 times, it couldn't be basis: unable to duplicate variable
+- Decider/All0.lean: In debruijn index, if every number is 0, it couldn't be basis: one variable is not enough, unable to construct complicate terms
+
 ## What we are going to do 
 There are still 1180 terms undecided:
 
@@ -57,7 +61,8 @@ See issues to startup
 1. Verify "Two vars are not enough", which will cover 78 terms
 2. Filter terms always terminate
 3. Filter terms always diverge
-4. Not sure
+4. Find more deciders
+5. Not sure
 
 
 ## Undecide problems
@@ -72,12 +77,29 @@ Some might diverge, we haven't proved.
 
 This project is quite suitable for AI-Driven Autonomous Proof.
 
-### Reference
-- https://esolangs.org/wiki/Closed_lambda_term
-- https://github.com/tromp/AIT/blob/master/Bases.lhs
+### Related papers
 
+Only 3 papers discuss single basis.
+
+We are implementing [^1]
+
+[^2] and [^3] are so hard to implement.
+
+There are also some online discussion: [^5] [^7] [^8]
 
 ## Contributors ✨
 
 <!-- ALL-CONTRIBUTORS-LIST:START -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+### References
+
+[^1]: Legrand, Remi. "A basis result in combinatory logic." The Journal of symbolic logic 53.4 (1988): 1224-1226.
+[^2]: Statman, Richard. "Combinators hereditarily of order two." (1988).
+[^3]: Rick Statman. **Two Variables Are Not Enough**. In *Proceedings of the 9th Italian Conference on Theoretical Computer Science (ICTCS 2005)*, Lecture Notes in Computer Science, vol. 3701, pp. 406–409, Springer, 2005.  [DOI](https://doi.org/10.1007/11560586_32)
+[^4]: https://github.com/tromp/AIT/blob/master/Bases.lhs
+[^5]: https://esolangs.org/wiki/Closed_lambda_term
+[^6]: https://en.wikipedia.org/wiki/Combinatory_logic
+[^7]: https://mathoverflow.net/questions/415334/do-combinatory-logic-bases-need-a-function-of-3-variables#
+[^8]: https://cstheory.stackexchange.com/questions/36276/incomplete-basis-of-combinators
+
