@@ -2,7 +2,6 @@ import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.Basic
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBeta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.Congruence
 import FokkerChallenge.Basic
-import FokkerChallenge.CountBvar
 import FokkerChallenge.EnhancedCslib.Basic
 import FokkerChallenge.EnhancedCslib.NormalForm
 
@@ -77,7 +76,12 @@ def is_combinator_form (n : Nat) : Term String → Prop
   | abs t => n > 0 ∧ is_combinator_form (n - 1) t
   | t => n = 0 ∧ has_no_abs t = true
 
-/-- The (paper's) rank of a closed combinator term. -/
+/-- The paper's *rank* of a combinator. We define it as `head_abs_count`,
+which is the correct value when `M` is in `is_combinator_form n` for
+some `n`; for arbitrary terms it is simply the number of leading
+abstractions and does **not** validate the combinator-form requirement
+on the body. Pair this with `is_combinator_form` when the body
+condition matters. -/
 def comb_rank (M : Term String) : Nat := head_abs_count M
 
 example : comb_rank K = 2 := by
@@ -248,11 +252,12 @@ def IsRankLeq2 (Q : Term String) : Prop :=
   Q.LC ∧ Q.fv = ∅ ∧ head_abs_count Q ≤ 2 ∧
     ∃ body, has_no_abs body = true ∧ Q = iter_abs (head_abs_count Q) body
 
-/-- The (open) version of "every basis combinator has rank ≤ 2": if every
-abstraction occurring in `Y` is rank-≤-2, then so is every term in
-`PureComb Y`-image after applying enough arguments. We do not need this in
-its full strength here; a placeholder for the paper's standing assumption. -/
-def AllRankLeq2 (Y : Term String) : Prop := IsRankLeq2 Y
+/-- The standing assumption of the paper, specialised to a single-term
+basis: `Y` itself is a rank-≤-2 combinator. Renamed from a misleading
+"all" formulation: in the single-term-basis setting the only basis
+combinator is `Y`, so the paper's "every combinator in B has rank ≤ 2"
+collapses to `IsRankLeq2 Y`. -/
+abbrev AllRankLeq2 (Y : Term String) : Prop := IsRankLeq2 Y
 
 /-- **Lemma 1.** Under the rank-≤-2 hypothesis, head-reduction of `X A B`
 terminates at `T (E₁[A,B])` where `T` is a rank-2 combinator. We state the
