@@ -9,6 +9,7 @@ import FokkerChallenge.EnhancedCslib.AbsMustExists
 import FokkerChallenge.EnhancedCslib.DoubleEta
 import FokkerChallenge.EnhancedCslib.Basic
 import FokkerChallenge.EnhancedCslib.Fmt
+import FokkerChallenge.EnhancedCslib.NormalForm
 import FokkerChallenge.Decider.NoDuplicate
 import FokkerChallenge.Decider.EveryBvarUsed
 import FokkerChallenge.Decider.All0

@@ -331,10 +331,10 @@ induction k with
 theorem openrec_preserve_only_01 {M N} (hn: only_01 N) : two_vars_are_not_enough M -> only_01 (openRec 1 N M) := @openrec_preserve_only_01_inner (M.fokker_size + 1) N hn M (by omega)
 
 def diverge (t : Term String) : Prop :=
-  ∀ (t': Term String), Relation.ReflTransGen FullBeta t t' -> no_redex t' = false
+  ∀ (t': Term String), Relation.ReflTransGen FullBeta t t' -> has_redex t'
 
 def has_normal_form (t : Term String) : Prop :=
-  ∃ (t': Term String), Relation.ReflTransGen FullBeta t t' /\ no_redex t' = true
+  ∃ (t': Term String), Relation.ReflTransGen FullBeta t t' /\ has_redex t' = false
 
 theorem foo1 {t} : diverge t \/ has_normal_form t := by
 -- Use the law of excluded middle on the existence of a normal form
