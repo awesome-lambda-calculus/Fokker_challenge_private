@@ -6,7 +6,7 @@ def main : IO Unit := do
   -- let len := terms.length
   -- IO.println s!"Solution: {len}"
 
-  let terms := terms.filter (fun t => !Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.has_redex t)
+  let terms := terms.filter (fun t => !Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.has_beta_redex t)
   -- let len := terms.length
   -- IO.println s!"Solution: {len}"
 
