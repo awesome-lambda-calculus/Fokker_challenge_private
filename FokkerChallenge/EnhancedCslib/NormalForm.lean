@@ -4,6 +4,7 @@ import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBetaConfluence
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.Congruence
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBetaEtaConfluence
 import FokkerChallenge.EnhancedCslib.Basic
+import FokkerChallenge.EnhancedCslib.CountBvar
 import Mathlib.Data.Finset.Lattice.Basic
 
 namespace Cslib
@@ -136,18 +137,10 @@ theorem no_beta_redex_refl {M N : Term String} (hn : has_beta_redex M = false)
     rw [hn] at h1
     exact absurd h1 (by decide)
 
-/-- `has_bvar k M` returns `true` iff bound variable index `k`
-(measured from outside `M`) appears free anywhere in `M`. -/
-def has_bvar (k : ℕ) : Term String → Bool
-  | Term.bvar i => decide (i = k)
-  | Term.fvar _ => false
-  | Term.abs t => has_bvar (k + 1) t
-  | Term.app l r => has_bvar k l || has_bvar k r
-
 /-- `is_eta_pattern t` recognises the body of an η-redex: `t = app A (bvar 0)`
 where `A` does not reference `bvar 0`. -/
 def is_eta_pattern : Term String → Bool
-  | Term.app A (Term.bvar 0) => !has_bvar 0 A
+  | Term.app A (Term.bvar 0) => count_bvar 0 A = 0
   | _ => false
 
 /-- `has_eta_redex M` returns `true` iff `M` contains a sub-term of the form
@@ -160,45 +153,6 @@ def has_eta_redex : Term String → Bool
   | Term.abs t => is_eta_pattern t || has_eta_redex t
   | Term.app l r => has_eta_redex l || has_eta_redex r
 
-private lemma has_bvar_openRec_fvar {k i : ℕ} {x : String} (M : Term String)
-    (h : k ≠ i) :
-    has_bvar k (Term.openRec i (Term.fvar x) M) = has_bvar k M := by
-  induction M generalizing k i with
-  | bvar j =>
-    show has_bvar k (if i = j then Term.fvar x else Term.bvar j)
-        = has_bvar k (Term.bvar j)
-    split
-    case isTrue h_eq =>
-      show false = decide (j = k)
-      have : ¬ (j = k) := fun hjk => h (h_eq ▸ hjk.symm)
-      simp [this]
-    case isFalse _ => rfl
-  | fvar _ => rfl
-  | abs t ih =>
-    show has_bvar (k + 1) (Term.openRec (i + 1) (Term.fvar x) t)
-        = has_bvar (k + 1) t
-    exact ih (by omega)
-  | app l r ihl ihr =>
-    show (has_bvar k (Term.openRec i (Term.fvar x) l)
-          || has_bvar k (Term.openRec i (Term.fvar x) r))
-        = (has_bvar k l || has_bvar k r)
-    rw [ihl h, ihr h]
-
-private lemma has_bvar_eq_false_of_LC {M : Term String} (h : LC M) :
-    ∀ k, has_bvar k M = false := by
-  induction h with
-  | fvar _ => intro k; rfl
-  | @abs L e _ ih =>
-    intro k
-    show has_bvar (k + 1) e = false
-    have ⟨x, hx⟩ := fresh_exists L
-    have h1 : has_bvar (k + 1) (e ^ Term.fvar x) = false := ih x hx (k + 1)
-    rw [show (e ^ Term.fvar x) = Term.openRec 0 (Term.fvar x) e from rfl] at h1
-    rwa [has_bvar_openRec_fvar e (by omega)] at h1
-  | app _ _ ih_l ih_r =>
-    intro k
-    show (has_bvar k _ || has_bvar k _) = false
-    rw [ih_l k, ih_r k]; rfl
 
 private lemma is_eta_pattern_openRec {i : ℕ} {x : String} (t : Term String)
     (h : i ≠ 0) :
@@ -226,8 +180,14 @@ private lemma is_eta_pattern_openRec {i : ℕ} {x : String} (t : Term String)
       case isFalse _ =>
         cases j with
         | zero =>
-          show (!has_bvar 0 (Term.openRec i (Term.fvar x) l)) = (!has_bvar 0 l)
-          rw [has_bvar_openRec_fvar l (Ne.symm h)]
+          unfold is_eta_pattern
+          split
+          . rename_i heq
+            cases heq
+            rw [count_bvar_openRec_fvar]
+            omega
+          . rw [count_bvar_openRec_fvar]
+            omega
         | succ _ => rfl
     | fvar _ => rfl
     | abs _ => rfl
@@ -259,7 +219,7 @@ private lemma has_eta_redex_of_full_eta {M N : Term String} (h : FullEta M N) :
     | eta lc_A =>
       rename_i A
       show (is_eta_pattern (Term.app A (Term.bvar 0)) || has_eta_redex _) = true
-      have : has_bvar 0 A = false := has_bvar_eq_false_of_LC lc_A 0
+      have : count_bvar 0 A = 0 := count_bvar_0_of_locally_closed lc_A 0
       simp [is_eta_pattern, this]
   | @appL Z M' _ _ _ ih =>
     show (has_eta_redex Z || has_eta_redex M') = true

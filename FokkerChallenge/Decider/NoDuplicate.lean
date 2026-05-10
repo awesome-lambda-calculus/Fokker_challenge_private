@@ -3,7 +3,7 @@ import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBeta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullEta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBetaEtaConfluence
 import Mathlib.Data.Set.Card
-import FokkerChallenge.CountFvar
+import FokkerChallenge.EnhancedCslib.CountFvar
 import FokkerChallenge.FvarSubset
 
 namespace Cslib
@@ -26,7 +26,7 @@ induction M with
 | bvar _ => intros _ _ _ _ lcn
             unfold openRec
             split
-            . rw [count_bvar_even_of_locally_closed lcn]
+            . rw [count_bvar_0_of_locally_closed lcn]
               omega
             . unfold count_bvar
               split <;> omega
@@ -100,7 +100,7 @@ induction M with
               simp
               apply And.intro
               · apply ih <;> tauto
-              · rw [<- count_bvar_preserved_under_open_2]
+              · rw [<- count_bvar_openRec_fvar]
                 tauto
                 omega
 | app a b ha hb =>  intros x i hnd

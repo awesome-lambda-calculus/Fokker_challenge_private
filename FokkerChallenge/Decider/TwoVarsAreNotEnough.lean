@@ -4,7 +4,7 @@ import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullEta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBetaEtaConfluence
 import Mathlib.Data.Set.Card
 import FokkerChallenge.Basic
-import FokkerChallenge.CountBvar
+import FokkerChallenge.EnhancedCslib.CountBvar
 
 namespace Cslib
 

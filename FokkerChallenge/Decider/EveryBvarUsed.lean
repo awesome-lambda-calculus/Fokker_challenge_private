@@ -3,7 +3,7 @@ import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBeta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullEta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBetaEtaConfluence
 import Mathlib.Data.Set.Card
-import FokkerChallenge.CountBvar
+import FokkerChallenge.EnhancedCslib.CountBvar
 import FokkerChallenge.Basic
 
 namespace Cslib
@@ -118,7 +118,7 @@ induction M with
                 apply And.intro
                 . apply ih
                   assumption
-                . rw [<- count_bvar_preserved_under_open_2]
+                . rw [<- count_bvar_openRec_fvar]
                   assumption
                   omega
 

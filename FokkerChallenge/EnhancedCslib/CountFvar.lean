@@ -1,6 +1,6 @@
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.Basic
 import Mathlib.Data.Set.Card
-import FokkerChallenge.CountBvar
+import FokkerChallenge.EnhancedCslib.CountBvar
 
 namespace Cslib
 
