@@ -235,6 +235,100 @@ private lemma has_eta_redex_of_full_eta {M N : Term String} (h : FullEta M N) :
         has_eta_redex_openRec] at h1
     simp [h1]
 
+private lemma full_eta_step_lc_l {M N : Term String} (h : FullEta M N) : LC M := by
+  induction h with
+  | base h_e =>
+    cases h_e with
+    | eta lc_A =>
+      rename_i A
+      have hcb : count_bvar 0 A = 0 := count_bvar_0_of_locally_closed lc_A 0
+      apply LC.abs ∅
+      intro x _
+      show LC (Term.openRec 0 (Term.fvar x) (Term.app A (Term.bvar 0)))
+      show LC (Term.app (Term.openRec 0 (Term.fvar x) A)
+                        (Term.openRec 0 (Term.fvar x) (Term.bvar 0)))
+      rw [openRec_noop_of_count_bvar_zero 0 hcb]
+      exact LC.app lc_A (LC.fvar x)
+  | appL lc_Z _ ih => exact LC.app lc_Z ih
+  | appR lc_Z _ ih => exact LC.app ih lc_Z
+  | @abs M' _ xs _ ih => exact LC.abs xs M' ih
+
+/--
+A term has an η-redex (syntactically) and is locally closed iff a single
+`FullEta` step applies to it. The `M.LC` hypothesis is necessary: without it
+e.g. `M := abs (app (bvar 1) (bvar 0))` satisfies `has_eta_redex M = true`
+(since `count_bvar 0 (bvar 1) = 0`) but no `FullEta` step applies because the
+inner `bvar 1` is not locally closed.
+-/
+theorem has_eta_redex_equiv_full_eta {M : Term String} :
+    has_eta_redex M ∧ M.LC ↔ ∃ N, FullEta M N := by
+  constructor
+  · rintro ⟨h_redex, h_lc⟩
+    induction h_lc with
+    | fvar _ => simp [has_eta_redex] at h_redex
+    | @abs L e h_body ih =>
+      have h_redex_e : (is_eta_pattern e || has_eta_redex e) = true := h_redex
+      rcases (Bool.or_eq_true _ _).mp h_redex_e with h_pat | h_inner
+      · -- e is itself an η-pattern: e = app A (bvar 0) with count_bvar 0 A = 0
+        cases e with
+        | bvar _ => simp [is_eta_pattern] at h_pat
+        | fvar _ => simp [is_eta_pattern] at h_pat
+        | abs _ => simp [is_eta_pattern] at h_pat
+        | app A r =>
+          cases r with
+          | bvar k =>
+            cases k with
+            | zero =>
+              have hcb : count_bvar 0 A = 0 := by
+                simpa [is_eta_pattern] using h_pat
+              have ⟨x, hx⟩ := fresh_exists L
+              have h_lc_open : LC ((Term.app A (Term.bvar 0)) ^ Term.fvar x) :=
+                h_body x hx
+              have h_eq : (Term.app A (Term.bvar 0)) ^ Term.fvar x
+                          = Term.app A (Term.fvar x) := by
+                show Term.openRec 0 (Term.fvar x) (Term.app A (Term.bvar 0))
+                    = Term.app A (Term.fvar x)
+                show Term.app (Term.openRec 0 (Term.fvar x) A)
+                              (Term.openRec 0 (Term.fvar x) (Term.bvar 0))
+                    = Term.app A (Term.fvar x)
+                rw [openRec_noop_of_count_bvar_zero 0 hcb]
+                rfl
+              rw [h_eq] at h_lc_open
+              cases h_lc_open with
+              | app lc_A _ => exact ⟨A, Xi.base (.eta lc_A)⟩
+            | succ _ => simp [is_eta_pattern] at h_pat
+          | fvar _ => simp [is_eta_pattern] at h_pat
+          | abs _ => simp [is_eta_pattern] at h_pat
+          | app _ _ => simp [is_eta_pattern] at h_pat
+      · -- η-redex strictly inside e
+        have ⟨x, hx⟩ := fresh_exists (L ∪ e.fv : Finset String)
+        simp only [Finset.mem_union, not_or] at hx
+        obtain ⟨hxL, hxe⟩ := hx
+        have h_redex_open : has_eta_redex (e ^ Term.fvar x) = true := by
+          show has_eta_redex (Term.openRec 0 (Term.fvar x) e) = true
+          rw [has_eta_redex_openRec]; exact h_inner
+        have ⟨N, hN⟩ := ih x hxL h_redex_open
+        have h_lc_open : (e ^ Term.fvar x).LC := h_body x hxL
+        have hclose : ((e ^ Term.fvar x) ^* x).abs ⭢ηᶠ (N ^* x).abs :=
+          FullEta.step_abs_close hN h_lc_open
+        rw [show (e ^ Term.fvar x) ^* x = e from (open_close_var x e hxe).symm] at hclose
+        exact ⟨_, hclose⟩
+    | @app l r lc_l lc_r ih_l ih_r =>
+      have h_or : (has_eta_redex l || has_eta_redex r) = true := h_redex
+      by_cases hl : has_eta_redex l = true
+      · have ⟨N, hN⟩ := ih_l hl
+        exact ⟨_, Xi.appR lc_r hN⟩
+      · have hl_false : has_eta_redex l = false := by
+          cases hh : has_eta_redex l
+          · rfl
+          · exact absurd hh hl
+        rw [hl_false] at h_or
+        have hr : has_eta_redex r = true := h_or
+        have ⟨N, hN⟩ := ih_r hr
+        exact ⟨_, Xi.appL lc_l hN⟩
+  · rintro ⟨N, hN⟩
+    exact ⟨has_eta_redex_of_full_eta hN, full_eta_step_lc_l hN⟩
+
 /--
 If `N.abs` has no β-redex and no η-redex anywhere, then `M` reaches `N.abs` by
 forward `FullBetaEta` reductions iff they are merely `EqvGen`-related.
