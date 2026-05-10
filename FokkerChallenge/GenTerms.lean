@@ -1,5 +1,5 @@
 import FokkerChallenge.Basic
-import FokkerChallenge.CountBvar
+import FokkerChallenge.EnhancedCslib.CountBvar
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.LcAt
 import Mathlib.Tactic.IntervalCases
 
@@ -293,7 +293,7 @@ theorem gen_terms_spec : ∀ (M : Term String) (abs_count app_count : Nat),
     rintro ⟨hfv, hlc⟩
     have hbv : ∀ k, k ≥ 0 → count_bvar k M = 0 := by
       intro k _
-      exact count_bvar_even_of_locally_closed hlc k
+      exact count_bvar_0_of_locally_closed hlc k
     have h := gen_terms_complete M 0 hfv hbv
     rw [habs, happ] at h
     exact h

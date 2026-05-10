@@ -40,7 +40,7 @@ induction M with
                 assumption
 
 
-theorem count_bvar_preserved_under_open_2 {x M} :
+theorem count_bvar_openRec_fvar {x M} :
   (i j : Nat) → ¬ j = i → count_bvar j (M⟦i ↝ (fvar x)⟧) = count_bvar j M := by
 induction M with
 | fvar _ => simp [count_bvar, openRec]
@@ -123,7 +123,7 @@ induction M with intros i h
                       rw [ga]
                       simp_all
 
-theorem count_bvar_even_of_locally_closed {N} : LC N -> (j: Nat) -> count_bvar j N = 0 := by
+theorem count_bvar_0_of_locally_closed {N} : LC N -> (j: Nat) -> count_bvar j N = 0 := by
 intros h
 induction h with
 | fvar x => unfold count_bvar
@@ -139,7 +139,7 @@ induction h with
                   obtain ⟨x, hx⟩ := h4
                   specialize ih x hx (j+1)
                   unfold open' at ih
-                  rw [count_bvar_preserved_under_open_2] at ih
+                  rw [count_bvar_openRec_fvar] at ih
                   assumption
                   omega
 
@@ -157,7 +157,7 @@ induction M with
             . unfold count_bvar
               simp
             . symm
-              apply count_bvar_even_of_locally_closed (by assumption)
+              apply count_bvar_0_of_locally_closed (by assumption)
             . unfold count_bvar
               split <;> omega
 | fvar _ => simp [count_bvar, openRec]

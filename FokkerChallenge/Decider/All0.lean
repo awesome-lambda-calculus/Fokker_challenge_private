@@ -6,7 +6,7 @@ import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.LcAt
 import FokkerChallenge.EnhancedCslib.Basic
 import Mathlib.Data.Set.Card
 import FokkerChallenge.Basic
-import FokkerChallenge.CountBvar
+import FokkerChallenge.EnhancedCslib.CountBvar
 import FokkerChallenge.FvarSubset
 
 namespace Cslib
