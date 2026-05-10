@@ -342,17 +342,17 @@ satisfies `N.fv = ∅` and `has_beta_redex N = false`, yet
 opening the outer binder. The `has_eta_redex` check rules this out.
 -/
 theorem reflTransGen_iff_eqvGen_of_normal {M N : Term String}
-    (hb : N.abs.has_beta_redex = false) (he : N.abs.has_eta_redex = false) :
-    Relation.ReflTransGen FullBetaEta M N.abs ↔ Relation.EqvGen FullBetaEta M N.abs := by
+    (hb : N.has_beta_redex = false) (he : N.has_eta_redex = false) :
+    Relation.ReflTransGen FullBetaEta M N ↔ Relation.EqvGen FullBetaEta M N := by
   refine ⟨Relation.ReflTransGen.to_eqvGen, ?_⟩
   intro h
-  have norm : Relation.Normal FullBetaEta N.abs := by
+  have norm : Relation.Normal FullBetaEta N := by
     rintro ⟨Y, hY⟩
     rcases hY with hbeta | heta
-    · have h1 : has_beta_redex N.abs = true := has_beta_redex_of_full_beta hbeta
+    · have h1 : has_beta_redex N = true := has_beta_redex_of_full_beta hbeta
       rw [hb] at h1
       exact absurd h1 (by decide)
-    · have h1 : has_eta_redex N.abs = true := has_eta_redex_of_full_eta heta
+    · have h1 : has_eta_redex N = true := has_eta_redex_of_full_eta heta
       rw [he] at h1
       exact absurd h1 (by decide)
   exact Relation.ChurchRosser.normal_eqvGen_reflTransGen
