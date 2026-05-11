@@ -11,6 +11,7 @@ namespace Cslib
 
 namespace LambdaCalculus.LocallyNameless.Untyped.Term
 
+@[simp, scoped grind =]
 def has_beta_redex: Term String → Bool
   | Term.bvar _ => false
   | Term.fvar _ => false
@@ -128,6 +129,8 @@ theorem has_beta_redex_equiv_full_beta {M : Term String} :
   · rintro ⟨N, hN⟩
     exact ⟨has_beta_redex_of_full_beta hN, FullBeta.step_lc_l hN⟩
 
+theorem normal_fullBeta_iff_no_beta_redex {N}: N.has_beta_redex = false \/ ¬ N.LC <-> Relation.Normal FullBeta N := by grind [has_beta_redex_equiv_full_beta]
+
 theorem no_beta_redex_refl {M N : Term String} (hn : has_beta_redex M = false)
     (h : Relation.ReflTransGen FullBeta M N) : M = N := by
   induction h using Relation.ReflTransGen.head_induction_on with
@@ -139,6 +142,7 @@ theorem no_beta_redex_refl {M N : Term String} (hn : has_beta_redex M = false)
 
 /-- `is_eta_pattern t` recognises the body of an η-redex: `t = app A (bvar 0)`
 where `A` does not reference `bvar 0`. -/
+@[simp, scoped grind =]
 def is_eta_pattern : Term String → Bool
   | Term.app A (Term.bvar 0) => count_bvar 0 A = 0
   | _ => false
@@ -147,6 +151,7 @@ def is_eta_pattern : Term String → Bool
 `abs (app A (bvar 0))` where `A` does not reference the immediately binding
 abstraction. After fully opening the surrounding binders such a sub-term
 becomes a real η-redex. -/
+@[simp, scoped grind =]
 def has_eta_redex : Term String → Bool
   | Term.bvar _ => false
   | Term.fvar _ => false
@@ -328,6 +333,18 @@ theorem has_eta_redex_equiv_full_eta {M : Term String} :
         exact ⟨_, Xi.appL lc_l hN⟩
   · rintro ⟨N, hN⟩
     exact ⟨has_eta_redex_of_full_eta hN, full_eta_step_lc_l hN⟩
+
+theorem normal_fullEta_iff_no_eta_redex {N} : N.has_eta_redex = false \/ ¬ N.LC <-> Relation.Normal FullEta N := by grind [has_eta_redex_equiv_full_eta]
+
+private theorem normal_fullBetaEta_iff_no_beta_eta_redex_inner {N} : (N.has_beta_redex = false \/ ¬ N.LC) /\ (N.has_eta_redex = false \/ ¬ N.LC) <-> Relation.Normal FullBetaEta N := by
+rw [normal_fullEta_iff_no_eta_redex, normal_fullBeta_iff_no_beta_redex]
+unfold FullBetaEta
+constructor <;> simp_all
+
+theorem normal_fullBetaEta_iff_no_beta_eta_redex {N} : (N.has_beta_redex = false /\ N.has_eta_redex = false) \/ ¬ N.LC <-> Relation.Normal FullBetaEta N := by
+rw [<- normal_fullBetaEta_iff_no_beta_eta_redex_inner]
+tauto
+
 
 /--
 If `N.abs` has no β-redex and no η-redex anywhere, then `M` reaches `N.abs` by
