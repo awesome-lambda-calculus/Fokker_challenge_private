@@ -37,9 +37,8 @@ private lemma key_lemma {M T : Term String} {x : String}
         subst h_eq'
         exact ⟨M1, h_M_red, h_lc'⟩
     | inr h =>
-      obtain ⟨N, h_red', h_lc'⟩ := h
       right
-      exact ⟨N, h_red', h_lc'⟩
+      exact h
 
 theorem ReductionToAbstraction {M Y} {x : String} :
     M.LC →
