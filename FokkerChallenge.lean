@@ -13,4 +13,5 @@ import FokkerChallenge.EnhancedCslib.NormalForm
 import FokkerChallenge.Decider.NoDuplicate
 import FokkerChallenge.Decider.EveryBvarUsed
 import FokkerChallenge.Decider.All0
+import FokkerChallenge.EncoderDecoder.Basic
 -- import FokkerChallenge.Decider.TwoVarsAreNotEnough
