@@ -65,9 +65,6 @@ See issues to startup
 5. Not sure
 
 
-## Undecide problems
-
-1. How to name theorem which verify term is not basis: Godel encoding ?
 
 ## How to deal with undecided terms
 
@@ -92,6 +89,43 @@ There are also some online discussion: [^5] [^7] [^8]
 <!-- ALL-CONTRIBUTORS-LIST:START -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
+## Encoding
+
+We have thousands of terms that require individual analysis, so an intuitive encoding scheme is necessary.
+
+Based on BLC[^9], our encoding algorithm is
+
+```
+encode(λM) = L encode(M)
+
+encode(M N) = A encode(M) encode(N)
+
+encode(i) = i
+```
+
+```
+cd rust-scripts
+cargo run --bin encode "λλ2 (1 2)"                                                                                                                                                     (base)
+
+def Term_LLA2A12: Term String := .abs (.abs (.app (.bvar 2) (.app (.bvar 1) (.bvar 2))))
+
+theorem LLA2A12_is_not_basis : not_basis Term_LLA2A12 := by sorry
+```
+
+```
+# Well encoded term results []
+lake exe decode LA0L1                                                                                                                                                                (base)
+
+decoded: (λ0 (λ1), [])
+```
+
+```
+# Irrelevant suffixes will be ignored
+lake exe decode LA0L1_is_not_basis                                                                                                                                                   (base)
+
+decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])
+```
+
 ### References
 
 [^1]: Legrand, Remi. "A basis result in combinatory logic." The Journal of symbolic logic 53.4 (1988): 1224-1226.
@@ -102,4 +136,5 @@ There are also some online discussion: [^5] [^7] [^8]
 [^6]: https://en.wikipedia.org/wiki/Combinatory_logic
 [^7]: https://mathoverflow.net/questions/415334/do-combinatory-logic-bases-need-a-function-of-3-variables#
 [^8]: https://cstheory.stackexchange.com/questions/36276/incomplete-basis-of-combinators
+[^9]: https://tromp.github.io/cl/Binary_lambda_calculus.html
 

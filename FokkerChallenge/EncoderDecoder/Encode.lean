@@ -8,17 +8,11 @@ import FokkerChallenge.EnhancedCslib.CountBvar
 import FokkerChallenge.EnhancedCslib.Fmt
 import FokkerChallenge.EncoderDecoder.Basic
 
-def boolToNat (b : Bool) : Nat :=
-  if b then 1 else 0
-
-def listBoolToNat (bs : List Bool) : List Nat :=
-  bs.map boolToNat
-
 def main : IO Unit :=
   let term := Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.K
   match Cslib.LambdaCalculus.LocallyNameless.Untyped.Term.encode term with
   | some s => do
-      let s := listBoolToNat s
+      let s := String.ofList s
       IO.println s!"{s}"
   | none => do
       IO.println "Fail to encode"

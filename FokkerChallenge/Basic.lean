@@ -10,6 +10,7 @@ namespace Cslib
 
 namespace LambdaCalculus.LocallyNameless.Untyped.Term
 
+@[simp, scoped grind =]
 def fokker_size : (Term String) -> Nat
 | bvar _ => 0
 | fvar _ => 0
