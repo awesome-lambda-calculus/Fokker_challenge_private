@@ -11,42 +11,7 @@ theorem openRec_fv_cases {M N: Term String} :
 (i: Nat) ->
 (openRec i N M).fv = M.fv \/
 (openRec i N M).fv = M.fv ∪ N.fv := by
-induction M with unfold openRec
-| bvar _ => intros i
-            split
-            simp
-            tauto
-| fvar _ => tauto
-| abs _ ih => intros i
-              conv =>
-                lhs
-                unfold fv
-              conv =>
-                rhs
-                lhs
-                unfold fv
-              conv =>
-                rhs
-                rhs
-                lhs
-                unfold fv
-              apply ih
-| app a b iha ihb =>  intros i
-                      conv =>
-                        lhs
-                        unfold fv
-                      conv =>
-                        rhs
-                        lhs
-                        unfold fv
-                      conv =>
-                        rhs
-                        rhs
-                        lhs
-                        unfold fv
-                      specialize iha i
-                      specialize ihb i
-                      cases iha <;> cases ihb <;> grind
+induction M with grind
 
 end Term
 
