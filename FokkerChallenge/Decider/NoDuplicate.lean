@@ -368,11 +368,14 @@ theorem Gen_no_duplicate {Y M : Term String} :
                           unfold no_duplicate
                           simp_all
 
-theorem not_reaches_omega {X} : no_duplicate X ->
-  ¬ ∃ M, Gen X M ∧ Relation.ReflTransGen FullBetaEta M omega := by
-  intro g h
-  rcases h with ⟨M, hgen, hred⟩
-  have hlin := Gen_no_duplicate hgen
-  have hlinK := fullBetaEtastar_preserves_no_duplicate hred (hlin g)
-  rw [omega_not_no_duplicate] at hlinK
-  tauto
+theorem not_reaches_omega {X} (h : no_duplicate X) : not_basis X := by
+  exists omega
+  refine ⟨?_, ?_, ?_⟩
+  . rw [← lcAt_iff_LC]
+    decide
+  . grind [omega]
+  . intros Y hgen hred
+    have hlin := Gen_no_duplicate hgen
+    have hlinK := fullBetaEtastar_preserves_no_duplicate hred (hlin h)
+    rw [omega_not_no_duplicate] at hlinK
+    tauto

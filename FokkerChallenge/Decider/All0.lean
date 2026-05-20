@@ -301,12 +301,15 @@ theorem Gen_all0_no_fvar_inside_abs {Y M : Term String} :
                           specialize ihN h
                           grind [all0_no_fvar_inside_abs, all0, no_fvar_inside_abs]
 
-theorem all0_no_fvar_inside_abs_not_reaches_S {X} : X.all0_no_fvar_inside_abs ->
-  ¬ ∃ M, Gen X M ∧ Relation.ReflTransGen FullBetaEta M S := by
-  intro g h
-  rcases h with ⟨M, hgen, hred⟩
-  apply Gen_all0_no_fvar_inside_abs at hgen
-  apply hgen at g
-  apply fullBetaEtastar_preserves_all0_no_fvar_inside_abs at hred
-  apply hred at g
-  grind [S, all0_no_fvar_inside_abs, all0]
+theorem all0_no_fvar_inside_abs_not_reaches_S {X} (h: X.all0_no_fvar_inside_abs) :
+  not_basis X := by
+  exists S
+  refine ⟨?_, ?_, ?_⟩
+  . rw [← lcAt_iff_LC]
+    decide
+  . grind [S]
+  . intros Y hgen hred
+    apply Gen_all0_no_fvar_inside_abs at hgen
+    apply hgen at h
+    have := fullBetaEtastar_preserves_all0_no_fvar_inside_abs hred h
+    grind [S, all0_no_fvar_inside_abs, all0]

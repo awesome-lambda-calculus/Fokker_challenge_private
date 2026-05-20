@@ -382,28 +382,14 @@ theorem fullBetaEtastar_preserves_every_bvar_used {M N} :
                         | inr h =>  apply fulleta_preserves_every_bvar_used at h
                                     apply h ih
 
-theorem not_reaches_K {X} : every_bvar_used X ->
-  ¬ ∃ M, Gen X M ∧ Relation.ReflTransGen FullBetaEta M K := by
-  intro g h
-  rcases h with ⟨M, hgen, hred⟩
-  have hlin := Gen_every_bvar_used hgen
-  have hlinK := fullBetaEtastar_preserves_every_bvar_used hred (hlin g)
-  rw [K_not_every_bvar_used] at hlinK
-  tauto
-
-/-
-/-
-  X = λx y z. x y z
--/
-def X : Term String :=
-  .abs (abs (abs (
-    app (app (bvar 2) (bvar 1)) (bvar 0)
-  )))
-
-/-
-  X is every_bvar_used
--/
-theorem X_every_bvar_used : every_bvar_used X := by
-  unfold X every_bvar_used count_bvar
-  repeat constructor
--/
+theorem not_reaches_K {X} (h: every_bvar_used X) : not_basis X := by
+  exists K
+  refine ⟨?_, ?_, ?_⟩
+  . rw [← lcAt_iff_LC]
+    decide
+  . grind [K]
+  . intros Y hgen hred
+    have hlin := Gen_every_bvar_used hgen
+    have hlinK := fullBetaEtastar_preserves_every_bvar_used hred (hlin h)
+    rw [K_not_every_bvar_used] at hlinK
+    tauto

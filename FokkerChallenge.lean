@@ -14,4 +14,5 @@ import FokkerChallenge.Decider.NoDuplicate
 import FokkerChallenge.Decider.EveryBvarUsed
 import FokkerChallenge.Decider.All0
 import FokkerChallenge.EncoderDecoder.Basic
+import FokkerChallenge.GenFinite.LA0L1
 -- import FokkerChallenge.Decider.TwoVarsAreNotEnough
