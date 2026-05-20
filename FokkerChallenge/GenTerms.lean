@@ -188,6 +188,7 @@ theorem lcAt_of_count_bvar_zero :
   induction M with
   | bvar i =>
     intro d hbv
+    simp [LcAt]
     show i < d
     by_contra hi
     have := hbv i (Nat.not_lt.mp hi)
@@ -206,6 +207,7 @@ theorem lcAt_of_count_bvar_zero :
     exact h
   | app L R ihL ihR =>
     intro d hbv
+    simp [LcAt]
     refine ⟨ihL d ?_, ihR d ?_⟩ <;> intro k hk
     · have := hbv k hk; simp [count_bvar] at this; omega
     · have := hbv k hk; simp [count_bvar] at this; omega
@@ -231,7 +233,7 @@ theorem gen_terms_sound :
     subst hab
     refine ⟨?_, ?_, ?_, ?_⟩
     · simp [fv]
-    · show a < d; exact ha
+    · simp [LcAt]; show a < d; exact ha
     · simp [abs_count]
     · simp [app_count]
   · -- Recursive case: at least one of n_lams, n_apps is positive
@@ -276,7 +278,7 @@ theorem gen_terms_sound :
         obtain ⟨hfvR, hlcR, habsR, happR⟩ := ihR_res
         refine ⟨?_, ?_, ?_, ?_⟩
         · simp [fv, hfvL, hfvR]
-        · exact ⟨hlcL, hlcR⟩
+        · simp [LcAt]; exact ⟨hlcL, hlcR⟩
         · show left.abs_count + right.abs_count = n_lams
           rw [habsL, habsR]; omega
         · show 1 + left.app_count + right.app_count = n_apps
