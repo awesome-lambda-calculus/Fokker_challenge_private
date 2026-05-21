@@ -131,15 +131,6 @@ theorem has_beta_redex_equiv_full_beta {M : Term String} :
 
 theorem normal_fullBeta_iff_no_beta_redex {N}: N.has_beta_redex = false \/ ¬ N.LC <-> Relation.Normal FullBeta N := by grind [has_beta_redex_equiv_full_beta]
 
-theorem no_beta_redex_refl {M N : Term String} (hn : has_beta_redex M = false)
-    (h : Relation.ReflTransGen FullBeta M N) : M = N := by
-  induction h using Relation.ReflTransGen.head_induction_on with
-  | refl => rfl
-  | head step _ _ =>
-    have h1 := has_beta_redex_of_full_beta step
-    rw [hn] at h1
-    exact absurd h1 (by decide)
-
 /-- `is_eta_pattern t` recognises the body of an η-redex: `t = app A (bvar 0)`
 where `A` does not reference `bvar 0`. -/
 @[simp, scoped grind =]
