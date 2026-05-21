@@ -233,18 +233,9 @@ private lemma has_eta_redex_of_full_eta {M N : Term String} (h : FullEta M N) :
 
 private lemma full_eta_step_lc_l {M N : Term String} (h : FullEta M N) : LC M := by
   induction h with
-  | base h_e =>
-    cases h_e with
-    | eta lc_A =>
-      rename_i A
-      have hcb : count_bvar 0 A = 0 := count_bvar_0_of_locally_closed lc_A 0
-      apply LC.abs ∅
-      intro x _
-      show LC (Term.openRec 0 (Term.fvar x) (Term.app A (Term.bvar 0)))
-      show LC (Term.app (Term.openRec 0 (Term.fvar x) A)
-                        (Term.openRec 0 (Term.fvar x) (Term.bvar 0)))
-      rw [openRec_noop_of_count_bvar_zero 0 hcb]
-      exact LC.app lc_A (LC.fvar x)
+  | base h_e => cases h_e with
+                | eta lc_A => apply LC.abs ∅
+                              grind [open', openRec]
   | appL lc_Z _ ih => exact LC.app lc_Z ih
   | appR lc_Z _ ih => exact LC.app ih lc_Z
   | @abs M' _ xs _ ih => exact LC.abs xs M' ih
