@@ -352,8 +352,8 @@ theorem fullBetaEtastar_preserves_no_duplicate {M N} :
                                     apply h ih
 
 
-theorem omega_not_no_duplicate: no_duplicate omega = false := by
-  unfold omega no_duplicate count_bvar no_duplicate no_duplicate count_bvar
+theorem omega_not_no_duplicate: no_duplicate M = false := by
+  unfold M no_duplicate count_bvar no_duplicate no_duplicate count_bvar
   simp
 
 
@@ -369,11 +369,11 @@ theorem Gen_no_duplicate {Y M : Term String} :
                           simp_all
 
 theorem not_reaches_omega {X} (h : no_duplicate X) : not_basis X := by
-  exists omega
+  exists M
   refine ⟨?_, ?_, ?_⟩
   . rw [← lcAt_iff_LC]
     decide
-  . grind [omega]
+  . grind [M]
   . intros Y hgen hred
     have hlin := Gen_no_duplicate hgen
     have hlinK := fullBetaEtastar_preserves_no_duplicate hred (hlin h)

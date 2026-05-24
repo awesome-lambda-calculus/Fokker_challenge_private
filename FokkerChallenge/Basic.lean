@@ -41,9 +41,10 @@ abs (abs (abs (
   )))
 
 /-
-  omega = λx y. x
+  M combinator in BAMT combinator systems
+  M = λx.x x
 -/
-def omega : Term String := abs (app (bvar 0) (bvar 0))
+def M : Term String := abs (app (bvar 0) (bvar 0))
 
 /-
   Generated terms (application closure)
