@@ -22,6 +22,8 @@
               const input = document.getElementById('input').value.trim();
               const output = document.getElementById('output');
               const status = document.getElementById('status');
+              const solved = document.getElementById('solved');
+              const fokker_size = document.getElementById('fokker_size');
 
               if (!input) {
                 status.innerHTML = `<span class="text-red-500">Please enter a term</span>`;
@@ -35,9 +37,32 @@
               if (leanCode === undefined) {
                 output.textContent = "";
                 status.innerHTML = `<span class="text-red-500">Failed to parse term. Please check the format.</span>`;
-              }else{
-                output.textContent = leanCode;
+                solved.innerHTML = "";
+              }else if (!leanCode.lc) {
+                output.textContent = "";
+                status.innerHTML = `<span class="text-red-500">This term is not closed</span>`;
+                fokker_size.innerHTML = `<span class="text-emerald-600">Fokker size: ${leanCode.fokker_size}</span>`;
+                solved.innerHTML = "";
+              }else if (leanCode.fokker_size >= 7) {
+                output.textContent = "";
+                status.innerHTML = `<span class="text-red-500">Fokker size exceeds 7, which is out of consideration</span>`;
+                fokker_size.innerHTML = `<span class="text-emerald-600">Fokker size: ${leanCode.fokker_size}</span>`;
+                solved.innerHTML = "";
+              }else {
+                fokker_size.innerHTML = `<span class="text-emerald-600">Fokker size: ${leanCode.fokker_size}</span>`;
+                output.textContent = leanCode.code_template;
                 status.innerHTML = `<span class="text-emerald-600">✓ Generated successfully</span>`;
+                if (leanCode.every_bvar_is_used) {
+                  solved.innerHTML = `<span class="text-emerald-600">✓ Theorem is solved by decide every_bvar_is_used</span>`;
+                } else if (leanCode.all0) {
+                  solved.innerHTML = `<span class="text-emerald-600">✓ Theorem is solved by decide all0</span>`;
+                } else if (leanCode.no_duplicate) {
+                  solved.innerHTML = `<span class="text-emerald-600">✓ Theorem is solved by decide no_duplicate</span>`;
+                } else if (leanCode.two_vars_are_enough) {
+                  solved.innerHTML = `<span class="text-red-500">Undecided!</span>`;
+                } else {
+                  solved.innerHTML = "";
+                }
               }
             }
         }
@@ -67,7 +92,7 @@
         <div class="mt-4 flex gap-3">
           <button onclick="generateLean()" 
             class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-xl transition">
-            <i class="fas fa-magic mr-2"></i> Generate Lean Code
+            <i class="fas fa-magic mr-2"></i> Search
           </button>
           
           <button onclick="clearAll()" 
@@ -96,6 +121,8 @@
         <pre id="output" class="bg-gray-900 text-green-400 p-6 rounded-xl overflow-auto max-h-[500px] text-sm leading-relaxed"></pre>
 
         <div id="status" class="mt-4 text-sm text-center text-gray-500"></div>
+        <div id="fokker_size" class="mt-4 text-sm text-center text-gray-500"></div>
+        <div id="solved" class="mt-4 text-sm text-center text-gray-500"></div>
       </div>
     </div>
 
@@ -114,6 +141,7 @@
       document.getElementById('input').value = '';
       document.getElementById('output').textContent = '';
       document.getElementById('status').innerHTML = '';
+      document.getElementById('fokker_size').innerHTML = '';
     }
 
     // Keyboard shortcut: Ctrl/Cmd + Enter

@@ -8,5 +8,5 @@ fn main() {
     let t = args().nth(1).unwrap();
 
     let s = parse_term_in_any_format(&t).unwrap();
-    println!("{s}");
+    println!("{:?}", s);
 }

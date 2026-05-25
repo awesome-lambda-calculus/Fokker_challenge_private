@@ -2,8 +2,25 @@ use lambda_calculus::term::*;
 use lambda_calculus::*;
 use wasm_bindgen::prelude::wasm_bindgen;
 
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Debug, Clone)]
+pub struct Res {
+    pub encoded: String,
+    pub fokker_size: usize,
+    pub lc: bool,
+    pub all0: bool,
+    pub no_duplicate: bool,
+    pub every_bvar_is_used: bool,
+    pub has_beta_redex: bool,
+    pub has_eta_redex: bool,
+    pub two_vars_are_enough: bool,
+    pub priority: String,
+    pub difficulty: String,
+    pub code_template: String,
+}
+
 #[wasm_bindgen]
-pub fn parse_term_in_any_format(x: &str) -> Option<String> {
+pub fn parse_term_in_any_format(x: &str) -> Option<Res> {
     let x = x.replace("Term.app", " ");
     let x = x.replace("Term.bvar", " ");
     let x = x.replace("Term.abs", "λ");
@@ -29,12 +46,42 @@ pub fn parse_term_in_any_format(x: &str) -> Option<String> {
         return None;
     }
 
-    let s = format!(
-        "def Term_{0}: Term String := {1}
+    let priority = if t.all0() {
+        "high"
+    } else if t.no_duplicate() && t.two_vars_are_enough() && t.every_bvar_used() {
+        "medium"
+    } else {
+        "low"
+    };
+
+    let difficulty = if t.all0() {
+        "easy"
+    } else if t.no_duplicate() && t.two_vars_are_enough() && t.every_bvar_used() {
+        "medium"
+    } else {
+        "hard"
+    };
+
+    let res = Res {
+        encoded: t.encode(),
+        fokker_size: t.fokker_size(),
+        lc: t.lc(),
+        all0: t.all0(),
+        no_duplicate: t.no_duplicate(),
+        every_bvar_is_used: t.every_bvar_used(),
+        has_beta_redex: t.has_beta_redex(),
+        has_eta_redex: t.has_eta_redex(),
+        two_vars_are_enough: t.two_vars_are_enough(),
+        priority: priority.to_string(),
+        difficulty: difficulty.to_string(),
+        code_template: format!(
+            "def Term_{0}: Term String := {1}
 
 theorem {0}_is_not_basis : not_basis Term_{0} := by sorry",
-        t.encode(),
-        t.print_lean(),
-    );
-    Some(s)
+            t.encode(),
+            t.print_lean(),
+        ),
+    };
+
+    Some(res)
 }
