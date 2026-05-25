@@ -15,6 +15,10 @@
     <script type="module">
         import init, { parse_term_in_any_format } from './pkg/rust_scripts.js';
 
+        async function loadJson() {
+          const response = await fetch("basis_extract_result.json");
+          window.myData = await response.json();
+        }
         async function run() {
             await init(); // Initialize WASM
 
@@ -61,12 +65,25 @@
                 } else if (leanCode.two_vars_are_enough) {
                   solved.innerHTML = `<span class="text-red-500">Undecided!</span>`;
                 } else {
-                  solved.innerHTML = "";
+                  let found = false;
+                  outer: for (const result of window.myData.results) {
+                    for (const m of result.matches) {
+                      if (m.extracted_prefix === leanCode.encoded) {
+                        status.innerHTML = `<span class="text-emerald-600">${leanCode.encoded} is proven in ${result.filepath}</span><br>`;
+                        found = true;
+                        break outer;
+                      }
+                    }
+                  }
+                  if (!found) {
+                    status.innerHTML = `<span class="text-red-500">${leanCode.encoded} is not proven</span>`;
+                  }
                 }
               }
             }
         }
 
+        loadJson();
         run();
     </script>
 
