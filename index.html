@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Term → Lean (not_basis)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    pre { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen py-8">
+    <script type="module">
+        import init, { parse_term_in_any_format } from './rust-scripts/pkg/rust_scripts.js';
+
+        async function loadJson() {
+          const response = await fetch("./rust-scripts/basis_extract_result.json");
+          window.proved_terms= await response.json();
+
+          const response2 = await fetch("./FokkerChallenge/GenFinite/finite.json");
+          window.finite_terms= await response2.json();
+        }
+        async function run() {
+            await init(); // Initialize WASM
+
+            window.generateLean = () => {
+              const input = document.getElementById('input').value.trim();
+              const lean4template = document.getElementById('lean4template');
+              const status = document.getElementById('status');
+              const fokker_size = document.getElementById('fokker_size');
+              const has_beta_redex = document.getElementById('has-beta-redex');
+              const has_eta_redex = document.getElementById('has-eta-redex');
+              const debruijn = document.getElementById('debruijn');
+              const encoded = document.getElementById('encoded');
+              const difficulty = document.getElementById('difficulty');
+
+              if (!input) {
+                status.innerHTML = `<span class="text-red-500">Please enter a term</span>`;
+                return;
+              }
+
+              console.log(input); // Debug: show encoded term
+              const res = parse_term_in_any_format(input);
+              console.log(res);
+
+              if (res === undefined) {
+                lean4template.textContent = "";
+                status.innerHTML = `<span class="text-red-500">Failed to parse term. Please check the format.</span>`;
+                has_beta_redex.innerHTML = "";
+                has_eta_redex.innerHTML = "";
+                fokker_size.innerHTML = "";
+                debruijn.innerHTML = "";
+                encoded.innerHTML = "";
+                difficulty.innerHTML = "";
+                return;
+              }
+
+              debruijn.innerHTML = `<span class="text-gray-500">DeBruijn: ${res.debruijn}</span>`;
+              encoded.innerHTML = `<span class="text-gray-500">Encoded: ${res.encoded}</span>`;
+
+              if (!res.lc) {
+                lean4template.textContent = "";
+                status.innerHTML = `<span class="text-red-500">${res.debruijn} is not closed</span>`;
+                has_beta_redex.innerHTML = "";
+                has_eta_redex.innerHTML = "";
+                fokker_size.innerHTML = "";
+                difficulty.innerHTML = "";
+                return;
+              }
+
+              if (res.has_beta_redex) {
+                has_beta_redex.innerHTML = `<span class="text-red-500">Has beta redex</span>`;
+              } else {
+                has_beta_redex.innerHTML = `<span class="text-emerald-600">No beta redex</span>`;
+              }
+              if (res.eta_normal_form === undefined) {
+                has_eta_redex.innerHTML = `<span class="text-emerald-600">No eta redex</span>`;
+              } else {
+                has_eta_redex.innerHTML = `<span class="text-red-500">Has eta redex: eta-reduce to ${res.eta_normal_form}</span>`;
+              }
+
+              if (res.fokker_size >= 7) {
+                lean4template.textContent = "";
+                status.innerHTML = `<span class="text-red-500">Fokker size exceeds 7, which is out of consideration</span>`;
+                fokker_size.innerHTML = `<span class="text-red-500">Fokker size: ${res.fokker_size}</span>`;
+              } else {
+                fokker_size.innerHTML = `<span class="text-emerald-600">Fokker size: ${res.fokker_size}</span>`;
+                if (res.every_bvar_is_used) {
+                  status.innerHTML = `<span class="text-emerald-600">✓ ${res.debruijn} is solved by decider every_bvar_is_used</span>`;
+                } else if (res.all0) {
+                  status.innerHTML = `<span class="text-emerald-600">✓ ${res.debruijn} is solved by decider all0</span>`;
+                } else if (res.no_duplicate) {
+                  status.innerHTML = `<span class="text-emerald-600">✓ ${res.debruijn} is solved by decider no_duplicate</span>`;
+                } else if (res.two_vars_are_enough) {
+                  status.innerHTML = `<span class="text-red-500">Undecided!</span>`;
+                  difficulty.innerHTML = `<span class="text-emerald-600">Difficulty: medium</span>`;
+                } else {
+                  let found = false;
+                  outer: for (const result of window.proved_terms.results) {
+                    for (const m of result.matches) {
+                      if (m.extracted_prefix === res.encoded) {
+                        status.innerHTML = `<span class="text-emerald-600">${res.encoded} is proven in ${result.filepath}</span><br>`;
+                        found = true;
+                        break outer;
+                      }
+                    }
+                  }
+                  if (found) {
+                    return;
+                  }
+
+                  lean4template.textContent = res.code_template;
+                  status.innerHTML = `<span class="text-red-500">${res.debruijn} is not proven</span>`;
+
+                  if (window.finite_terms.includes(res.debruijn)) {
+                    status.innerHTML += `<br><span class="text-emerald-600">However, it is finite</span>`;
+                    difficulty.innerHTML = `<span class="text-emerald-600">Difficulty: easy</span>`;
+                  }else{
+                    difficulty.innerHTML = `<span class="text-red-500">Difficulty: unknown</span>`;
+                  }
+                }
+              }
+            }
+        }
+
+        loadJson();
+        run();
+    </script>
+
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="text-center mb-10">
+      <h1 class="text-4xl font-bold text-gray-800 mb-2">
+        Term to Lean <span class="text-indigo-600">not_basis</span>
+      </h1>
+      <p class="text-gray-600">Convert terms to Lean 4 definitions + not_basis theorems</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Input -->
+      <div class="bg-white rounded-2xl shadow-lg p-8">
+        <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          <i class="fas fa-input"></i> Input Term
+        </h2>
+        
+        <textarea id="input" rows="6"
+          class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:border-indigo-500 font-mono text-sm resize-none"
+          placeholder="Enter your term (e.g. lambda x. x, app (var 0) (var 1), etc.)"></textarea>
+
+        <div class="mt-4 flex gap-3">
+          <button onclick="generateLean()" 
+            class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-xl transition">
+            <i class="fas fa-magic mr-2"></i> Search
+          </button>
+          
+          <button onclick="clearAll()" 
+            class="px-6 py-3 border border-gray-300 hover:bg-gray-100 rounded-xl transition">
+            Clear
+          </button>
+        </div>
+
+        <!-- Examples -->
+        <div class="mt-6">
+          <p class="text-sm text-gray-500 mb-2">Examples:</p>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="loadExample('λx.x')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">λx.x</button>
+            <button onclick="loadExample('app (var 0) (var 1)')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">app (var 0) (var 1)</button>
+            <button onclick="loadExample('lam (app (var 0) (var 0))')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">lam (app (var 0) (var 0))</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output -->
+      <div class="bg-white rounded-2xl shadow-lg p-8">
+        <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+          Generated Lean 4 Code
+        </h2>
+        
+        <div id="status" class="mt-4 text-sm text-center text-gray-500"></div>
+        <div id="debruijn" class="mt-4 text-sm text-center text-gray-500"></div>
+        <div id="encoded" class="mt-4 text-sm text-center text-gray-500"></div>
+        <div id="fokker_size" class="mt-4 text-sm text-center text-gray-500"></div>
+        <div id="has-beta-redex" class="mt-4 text-sm text-center text-gray-500"></div>
+        <div id="has-eta-redex" class="mt-4 text-sm text-center text-gray-500"></div>
+        <div id="difficulty" class="mt-4 text-sm text-center text-gray-500"></div>
+        <div id="priority" class="mt-4 text-sm text-center text-gray-500"></div>
+        <pre id="lean4template" class="bg-gray-900 text-green-400 p-6 rounded-xl overflow-auto max-h-[500px] text-sm leading-relaxed"></pre>
+      </div>
+    </div>
+
+    <footer class="text-center text-gray-400 text-xs mt-12">
+      Rust + WASM • De Bruijn • Lean 4
+    </footer>
+  </div>
+
+  <script>
+    function loadExample(term) {
+      document.getElementById('input').value = term;
+      generateLean();
+    }
+
+    function clearAll() {
+      document.getElementById('input').value = '';
+      document.getElementById('lean4template').textContent = '';
+      document.getElementById('status').innerHTML = '';
+      document.getElementById('fokker_size').innerHTML = '';
+      document.getElementById('debruijn').innerHTML = '';
+      document.getElementById('encoded').innerHTML = '';
+      document.getElementById('fokker_size').innerHTML = '';
+      document.getElementById('has-beta-redex').innerHTML = '';
+      document.getElementById('has-eta-redex').innerHTML = '';
+      document.getElementById('difficulty').innerHTML = '';
+      document.getElementById('priority').innerHTML = '';
+    }
+
+    // Keyboard shortcut: Ctrl/Cmd + Enter
+    document.getElementById('input').addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        generateLean();
+      }
+    });
+  </script>
+</body>
+</html>
