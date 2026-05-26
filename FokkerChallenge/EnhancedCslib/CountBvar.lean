@@ -1,4 +1,5 @@
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.Basic
+import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.LcAt
 import Mathlib.Data.Set.Card
 
 namespace Cslib

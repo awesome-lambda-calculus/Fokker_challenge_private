@@ -1,7 +1,6 @@
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.Basic
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBeta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.Congruence
-import FokkerChallenge.EnhancedCslib.Basic
 import Mathlib.Data.Finset.Lattice.Basic
 
 namespace Cslib

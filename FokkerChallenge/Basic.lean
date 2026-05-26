@@ -3,7 +3,6 @@ import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBetaEtaConflue
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.Congruence
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.LcAt
 import Cslib.Foundations.Data.HasFresh
-import FokkerChallenge.EnhancedCslib.Basic
 import FokkerChallenge.EnhancedCslib.NormalForm
 import Mathlib.Data.Finset.Lattice.Basic
 

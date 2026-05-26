@@ -1,4 +1,5 @@
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.Basic
+import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.LcAt
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBeta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullEta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBetaEtaConfluence
@@ -29,7 +30,7 @@ private lemma key_lemma {M T : Term String} {x : String}
         left
         refine ⟨M'', h_eq', ?_, ?_, ?_⟩
         · exact Relation.ReflTransGen.tail h_M_red h_step'
-        · exact FullBeta.step_not_fv h_step' h_fv'
+        · grind [FullBeta.step_not_fv h_step']
         · exact FullBeta.step_lc_r h_step'
       | inr h2 =>
         obtain ⟨M1, h_eq', h_T_eq⟩ := h2

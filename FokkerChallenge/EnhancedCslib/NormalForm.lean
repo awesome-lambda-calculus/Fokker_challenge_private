@@ -1,9 +1,9 @@
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.Basic
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBeta
+import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullEta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBetaConfluence
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.Congruence
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBetaEtaConfluence
-import FokkerChallenge.EnhancedCslib.Basic
 import FokkerChallenge.EnhancedCslib.CountBvar
 import Mathlib.Data.Finset.Lattice.Basic
 
@@ -231,14 +231,6 @@ private lemma has_eta_redex_of_full_eta {M N : Term String} (h : FullEta M N) :
         has_eta_redex_openRec] at h1
     simp [h1]
 
-private lemma full_eta_step_lc_l {M N : Term String} (h : FullEta M N) : LC M := by
-  induction h with
-  | base h_e => cases h_e with
-                | eta lc_A => apply LC.abs ∅
-                              grind [open', openRec]
-  | appL lc_Z _ ih => exact LC.app lc_Z ih
-  | appR lc_Z _ ih => exact LC.app ih lc_Z
-  | @abs M' _ xs _ ih => exact LC.abs xs M' ih
 
 /--
 A term has an η-redex (syntactically) and is locally closed iff a single
@@ -314,7 +306,7 @@ theorem has_eta_redex_equiv_full_eta {M : Term String} :
         have ⟨N, hN⟩ := ih_r hr
         exact ⟨_, Xi.appL lc_l hN⟩
   · rintro ⟨N, hN⟩
-    exact ⟨has_eta_redex_of_full_eta hN, full_eta_step_lc_l hN⟩
+    exact ⟨has_eta_redex_of_full_eta hN, FullEta.step_lc_l hN⟩
 
 theorem normal_fullEta_iff_no_eta_redex {N} : N.has_eta_redex = false \/ ¬ N.LC <-> Relation.Normal FullEta N := by grind [has_eta_redex_equiv_full_eta]
 

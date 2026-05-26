@@ -3,7 +3,6 @@ import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBeta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullEta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBetaEtaConfluence
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.LcAt
-import FokkerChallenge.EnhancedCslib.Basic
 import Mathlib.Data.Set.Card
 import FokkerChallenge.Basic
 import FokkerChallenge.EnhancedCslib.CountBvar
@@ -66,12 +65,8 @@ induction M with
               unfold no_fvar_inside_abs
               simp
               intros h1
-              have h := @openRec_fv_cases M (fvar x) 1
-              cases h with
-              | inl h =>  rw [h] at h1
-                          tauto
-              | inr h =>  rw [h] at h1
-                          simp at h1
+              have h := open_preserve_not_fvar 1 M (fvar x)
+              cases h with grind
 
 theorem no_fvar_inside_abs_of_open {M N}: M.all0 -> N.no_fvar_inside_abs -> M.no_fvar_inside_abs -> (M ^ N).no_fvar_inside_abs := by
 induction M with

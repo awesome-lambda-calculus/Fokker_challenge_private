@@ -20,7 +20,7 @@ unfold open'
 conv =>
   rhs
   unfold fv
-have h:= @openRec_fv_cases M N 0
+have h:= open_preserve_not_fvar 0 M N
 cases h <;> rename_i h <;> rw [h] <;> grind
 
 theorem eta_preserves_fvar_subset: r_preserves_fvar_subset Eta := by
@@ -45,8 +45,8 @@ induction hmn with
                   obtain ⟨x, hx⟩ := h4
                   specialize ih x (by grind)
                   unfold open' at ih
-                  have h:= @openRec_fv_cases M (fvar x) 0
-                  have g:= @openRec_fv_cases N (fvar x) 0
+                  have h := open_preserve_not_fvar 0 M (fvar x)
+                  have g := open_preserve_not_fvar 0 N (fvar x)
                   cases h <;> rename_i h <;> rw [h] at ih <;> cases g <;> rename_i h <;> rw [h] at ih
                   any_goals grind
                   simp at ih
