@@ -146,79 +146,16 @@
           View on GitHub
         </a>
       </div>
-      <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 text-left">
-        A one-point basis is a single lambda term that can generate the entire untyped lambda calculus by itself through repeated application.
-      </p>
-
-      <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 text-left">The currently known smallest one-point basis for untyped lambda calculus (in terms of <strong>Fokker size</strong>) is <strong>α</strong>, discovered by John Tromp.</p>
-
-
     </div>
 
-    <div class="mx-auto mb-10 max-w-3xl overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-slate-200">
-      <div class="px-6 py-5 border-b border-slate-200">
-        <h2 class="text-lg font-semibold text-slate-900">Proof Status Summary</h2>
-        <p class="mt-1 text-sm text-slate-500">Counts for proved and unproved terms, grouped by priority and difficulty.</p>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-slate-200 text-sm text-slate-700">
-          <thead class="bg-slate-50 text-left text-xs uppercase tracking-[0.12em] text-slate-500">
-            <tr>
-              <th class="px-6 py-4">Category</th>
-              <th class="px-6 py-4">Detail</th>
-              <th class="px-6 py-4">Count</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-200 bg-white">
-            <tr class="bg-slate-50">
-              <td class="px-6 py-4 font-semibold text-slate-900">Total</td>
-              <td class="px-6 py-4 text-slate-500">All terms with Fokker size < 7 </td>
-              <td class="px-6 py-4 font-semibold">5420</td>
-            </tr>
-            <tr>
-              <td class="px-6 py-4 font-semibold text-slate-900">Proved</td>
-              <td class="px-6 py-4 text-slate-500">Verified by the 3 deciders</td>
-              <td class="px-6 py-4 font-semibold">2814</td>
-            </tr>
-            <tr class="bg-slate-50">
-              <td class="px-6 py-4 font-semibold text-slate-900">Unproved</td>
-              <td class="px-6 py-4 text-slate-500">Remaining cases</td>
-              <td class="px-6 py-4 font-semibold">2606</td>
-            </tr>
-            <tr>
-              <td class="px-6 py-4 pl-10 text-slate-900">Terminate (trivial cases)</td>
-              <td class="px-6 py-4 text-slate-500">Low priority</td>
-              <td class="px-6 py-4">95</td>
-            </tr>
-            <tr>
-              <td class="px-6 py-4 pl-10 text-slate-900">With beta-redex or eta-redex</td>
-              <td class="px-6 py-4 text-slate-500">Low priority</td>
-              <td class="px-6 py-4">1469</td>
-            </tr>
-            <tr class="bg-slate-50">
-              <td class="px-6 py-4 pl-10 text-slate-900">Two vars are enough</td>
-              <td class="px-6 py-4 text-amber-600">High priority</td>
-              <td class="px-6 py-4">49</td>
-            </tr>
-            <tr class="bg-slate-50">
-              <td class="px-6 py-4 pl-10 text-slate-900">Others</td>
-              <td class="px-6 py-4 text-rose-600">High priority</td>
-              <td class="px-6 py-4">993</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="px-6 py-4 border-t border-slate-200 bg-slate-50">
-        <p class="text-sm text-slate-600">
-          Although some terms are labelled as low priority, if you proved any of them, PRs are very welcome.
-        </p>
-      </div>
-    </div>
 
     <section class="mt-10 rounded-3xl bg-white shadow-xl ring-1 ring-slate-200 p-8">
       <div class="max-w-4xl mx-auto space-y-6 text-slate-700">
-        <h2 class="text-2xl font-semibold text-slate-900">Project README</h2>
-        <p>The currently known smallest one-point basis for untyped lambda calculus (in terms of <strong>Fokker size</strong>) is <strong>α</strong>, discovered by John Tromp.</p>
+      <p>
+        A one-point basis is a single lambda term that can generate the entire untyped lambda calculus by itself through repeated application.
+      </p>
+
+        <p>The currently known smallest one-point basis for untyped lambda calculus (in terms of <strong>Fokker size</strong>) is <strong>α</strong>, discovered by John Tromp and Mtv Europe.</p>
         <pre class="w-full max-w-full rounded-xl bg-slate-950 text-slate-100 p-4 overflow-x-auto text-sm leading-relaxed"><code>α = λλλ2 0 (1 (λ1))
 B = λλλ2 (1 0) = α(α(α(α(α α) α))(α α) α)(α(α(α α)))
 C = λλλ2 0 1 = α(α α α(α α α)(α α)(α α)) α α
@@ -240,7 +177,8 @@ S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...</code></pre>
             <li>Find the smallest basis</li>
           </ul>
         </div>
-        <p>We use Lean 4 to formalize that all smaller closed lambda terms can't be a basis. Our proof is based on <a href="https://github.com/leanprover/cslib" class="text-indigo-600 hover:underline">cslib</a>.</p>
+        <p>We use Lean 4 to formalize that all smaller closed lambda terms can't be a basis. </p>
+        <p>Our proof is based on <a href="https://github.com/leanprover/cslib" class="text-indigo-600 hover:underline">cslib</a>.</p>
         <div>
           <h3 class="text-xl font-semibold text-slate-900">What we have done</h3>
           <p>We have formalized 3 simple deciders, which have proven 1421 terms could not be basis.</p>
@@ -318,6 +256,66 @@ decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])</code></pre>
         </div>
       </div>
     </section>
+
+    <div class="mx-auto mb-10 max-w-3xl overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-slate-200">
+      <div class="px-6 py-5 border-b border-slate-200">
+        <h2 class="text-lg font-semibold text-slate-900">Proof Status Summary</h2>
+        <p class="mt-1 text-sm text-slate-500">Counts for proved and unproved terms, grouped by priority and difficulty.</p>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200 text-sm text-slate-700">
+          <thead class="bg-slate-50 text-left text-xs uppercase tracking-[0.12em] text-slate-500">
+            <tr>
+              <th class="px-6 py-4">Category</th>
+              <th class="px-6 py-4">Detail</th>
+              <th class="px-6 py-4">Count</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 bg-white">
+            <tr class="bg-slate-50">
+              <td class="px-6 py-4 font-semibold text-slate-900">Total</td>
+              <td class="px-6 py-4 text-slate-500">All terms with Fokker size < 7 </td>
+              <td class="px-6 py-4 font-semibold">5420</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 font-semibold text-slate-900">Proved</td>
+              <td class="px-6 py-4 text-slate-500">Verified by the 3 deciders</td>
+              <td class="px-6 py-4 font-semibold">2814</td>
+            </tr>
+            <tr class="bg-slate-50">
+              <td class="px-6 py-4 font-semibold text-slate-900">Unproved</td>
+              <td class="px-6 py-4 text-slate-500">Remaining cases</td>
+              <td class="px-6 py-4 font-semibold">2606</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 pl-10 text-slate-900">Terminate (trivial cases)</td>
+              <td class="px-6 py-4 text-slate-500">Low priority</td>
+              <td class="px-6 py-4">95</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 pl-10 text-slate-900">With beta-redex or eta-redex</td>
+              <td class="px-6 py-4 text-slate-500">Low priority</td>
+              <td class="px-6 py-4">1469</td>
+            </tr>
+            <tr class="bg-slate-50">
+              <td class="px-6 py-4 pl-10 text-slate-900">Two vars are enough</td>
+              <td class="px-6 py-4 text-amber-600">High priority</td>
+              <td class="px-6 py-4">49</td>
+            </tr>
+            <tr class="bg-slate-50">
+              <td class="px-6 py-4 pl-10 text-slate-900">Others</td>
+              <td class="px-6 py-4 text-rose-600">High priority</td>
+              <td class="px-6 py-4">993</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="px-6 py-4 border-t border-slate-200 bg-slate-50">
+        <p class="text-sm text-slate-600">
+          Although some terms are labelled as low priority, if you proved any of them, PRs are very welcome.
+        </p>
+      </div>
+    </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Input -->
