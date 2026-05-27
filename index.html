@@ -162,8 +162,7 @@ C = λλλ2 0 1 = α(α α α(α α α)(α α)(α α)) α α
 K = λλ1 = α α(α(α α) α α α) α α
 W = λλ1 0 0 = α α(α(α(α α) α))
 I = λ0 = α(α(α(α α) α))(α(α α) α)
-F = λλ0 = α α α(α(α α)(α α)(α α)) α
-S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...</code></pre>
+S = λλλ (2 0) (1 0) = α(α(α α(α α(α α))(α(α(α α(α α))))))α α </code></pre>
         <p>The Fokker size of a closed term is the number of abstractions and applications.</p>
         <pre class="w-full max-w-full rounded-xl bg-slate-950 text-slate-100 p-4 overflow-x-auto text-sm leading-relaxed"><code>def fokker_size : (Term String) -> Nat
 | bvar _ => 0
@@ -173,7 +172,7 @@ S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...</code></pre>
         <div>
           <h3 class="text-xl font-semibold text-slate-900">Our goal</h3>
           <ul class="list-disc list-inside mt-3 space-y-2 text-slate-700">
-            <li>Verify α is smallest basis OR</li>
+            <li>Verify α is the smallest basis OR</li>
             <li>Find the smallest basis</li>
           </ul>
         </div>
@@ -203,6 +202,7 @@ S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...</code></pre>
         <div>
           <h3 class="text-xl font-semibold text-slate-900">Next steps</h3>
           <ol class="list-decimal list-inside mt-3 space-y-2 text-slate-700">
+            <li>Deal with terms without redex first</li>
             <li>Verify "Two vars are not enough"</li>
             <li>Filter terms always terminate</li>
             <li>Filter terms always diverge</li>
@@ -217,8 +217,20 @@ S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...</code></pre>
         </div>
         !-->
         <div>
-          <h3 class="text-xl font-semibold text-slate-900">AI usage</h3>
+          <h3 class="text-xl font-semibold text-slate-900">Looking for Participation</h3>
+          <p> This repository is an intentional experiment in AI-native development. </p>
+
+          <strong>We are especially hoping for AI assistance</strong> to help prove the remaining ~2000 terms are not bases.
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold text-slate-900">How AI Can Help (High Priority)</h3>
           <p>This project is quite suitable for AI-driven autonomous proof.</p>
+          <ol class="list-decimal list-inside mt-3 space-y-2 text-slate-700">
+              <li><strong>Autonomous Solve Known Trival Cases</strong>: Use LLMs + Lean 4 tactics to prove individual terms are not bases.  </li>
+              <li><strong>Automated Search Unknown Trival cases</strong></li>
+              <li><strong>Pattern Recognition</strong>: Analyze undecided terms to identify common structures or properties, guiding the discovery of new deciders. </li>
+              <li><strong>Mass Analysis</strong>: Systematically analyze thousands of undecided terms in parallel.</li>
+          </ol>
         </div>
         <!--
         <div>
@@ -264,6 +276,8 @@ decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])</code></pre>
     -->
     </section>
 
+    <br>
+
     <div class="mx-auto mb-10 max-w-3xl overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-slate-200">
       <div class="px-6 py-5 border-b border-slate-200">
         <h2 class="text-lg font-semibold text-slate-900">Proof Status Summary</h2>
@@ -286,7 +300,7 @@ decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])</code></pre>
             </tr>
             <tr>
               <td class="px-6 py-4 font-semibold text-slate-900">Proved</td>
-              <td class="px-6 py-4 text-slate-500">Verified by the 3 deciders</td>
+              <td class="px-6 py-4 text-slate-500">Verified by the <a href="https://github.com/awesome-lambda-calculus/Fokker_challenge_private/tree/main/FokkerChallenge/Decider" class="text-emerald-600 hover:underline">3 deciders</a></td>
               <td class="px-6 py-4 font-semibold">2814</td>
             </tr>
             <tr class="bg-slate-50">
@@ -295,7 +309,9 @@ decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])</code></pre>
               <td class="px-6 py-4 font-semibold">2606</td>
             </tr>
             <tr>
-              <td class="px-6 py-4 pl-10 text-slate-900">Terminate (trivial cases)</td>
+              <td class="px-6 py-4 pl-10 text-slate-900">
+                <a href="https://github.com/awesome-lambda-calculus/Fokker_challenge_private/blob/main/FokkerChallenge/GenFinite/finite.json" class="text-emerald-600 hover:underline"> Finite (trivial cases) </a>
+              </td>
               <td class="px-6 py-4 text-slate-500">Low priority</td>
               <td class="px-6 py-4">95</td>
             </tr>
@@ -352,7 +368,6 @@ decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])</code></pre>
           <p class="text-sm text-gray-500 mb-2">Examples:</p>
           <div class="flex flex-wrap gap-2">
             <button onclick="loadExample('λx.x')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">λx.x</button>
-            <!-- <button onclick="loadExample('app (var 0) (var 1)')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">app (var 0) (var 1)</button> -->
             <button onclick="loadExample('lam (app (var 0) (var 0))')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">lam (app (var 0) (var 0))</button>
             <button onclick="loadExample('λλ0(λ1)')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">λλ0(λ1)</button>
             <button onclick="loadExample('λλ1 1 (λλ1)')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">λλ1 1 (λλ1)</button>
