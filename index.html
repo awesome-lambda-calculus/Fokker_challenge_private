@@ -57,6 +57,11 @@
                 return;
               }
 
+              // Save successful search to history (defined later in non-module script)
+              if (typeof window.saveSearchHistory === 'function') {
+                window.saveSearchHistory(input);
+              }
+
               debruijn.innerHTML = `<span class="text-gray-500">DeBruijn: ${res.debruijn}</span>`;
               encoded.innerHTML = `<span class="text-gray-500">Encoded: ${res.encoded}</span>`;
 
@@ -169,6 +174,14 @@
             <button onclick="loadExample('lam (app (var 0) (var 0))')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">lam (app (var 0) (var 0))</button>
           </div>
         </div>
+        <!-- Search history -->
+        <div class="mt-6">
+          <p class="text-sm text-gray-500 mb-2">Search History:</p>
+          <div id="search-history" class="flex flex-wrap gap-2"></div>
+          <div class="mt-2">
+            <button id="clear-history-btn" onclick="clearHistory()" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">Clear history</button>
+          </div>
+        </div>
       </div>
 
       <!-- Output -->
@@ -214,12 +227,63 @@
       document.getElementById('priority').innerHTML = '';
     }
 
+    // Search history helpers (uses localStorage)
+    function getSearchHistory() {
+      try {
+        return JSON.parse(localStorage.getItem('searchHistory')) || [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    window.saveSearchHistory = function (term) {
+      if (!term) return;
+      const arr = getSearchHistory().filter(t => t !== term);
+      arr.unshift(term);
+      const max = 50;
+      const trimmed = arr.slice(0, max);
+      localStorage.setItem('searchHistory', JSON.stringify(trimmed));
+      loadHistoryUI();
+    }
+
+    function loadHistoryUI() {
+      const container = document.getElementById('search-history');
+      if (!container) return;
+      container.innerHTML = '';
+      const arr = getSearchHistory();
+      if (!arr || arr.length === 0) {
+        const el = document.createElement('span');
+        el.className = 'text-xs text-gray-400';
+        el.textContent = 'No history';
+        container.appendChild(el);
+        return;
+      }
+      for (const t of arr) {
+        const btn = document.createElement('button');
+        btn.className = 'text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg';
+        btn.textContent = t;
+        btn.onclick = () => {
+          document.getElementById('input').value = t;
+          generateLean();
+        };
+        container.appendChild(btn);
+      }
+    }
+
+    window.clearHistory = function () {
+      localStorage.removeItem('searchHistory');
+      loadHistoryUI();
+    }
+
     // Keyboard shortcut: Ctrl/Cmd + Enter
     document.getElementById('input').addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         generateLean();
       }
     });
+
+    // Initialize history UI on load
+    loadHistoryUI();
   </script>
 </body>
 </html>
