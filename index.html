@@ -259,6 +259,9 @@
         return;
       }
       for (const t of arr) {
+        const wrap = document.createElement('div');
+        wrap.className = 'flex items-center gap-2';
+
         const btn = document.createElement('button');
         btn.className = 'text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg';
         btn.textContent = t;
@@ -266,8 +269,27 @@
           document.getElementById('input').value = t;
           generateLean();
         };
-        container.appendChild(btn);
+
+        const del = document.createElement('button');
+        del.className = 'ml-1 text-xs px-2 py-1 bg-white border border-gray-200 hover:bg-red-50 text-red-600 rounded';
+        del.title = 'Delete this history item';
+        del.textContent = '✕';
+        del.onclick = (e) => {
+          e.stopPropagation();
+          deleteHistoryItem(t);
+        };
+
+        wrap.appendChild(btn);
+        wrap.appendChild(del);
+        container.appendChild(wrap);
       }
+    }
+
+    window.deleteHistoryItem = function (term) {
+      if (!term) return;
+      const arr = getSearchHistory().filter(t => t !== term);
+      localStorage.setItem('searchHistory', JSON.stringify(arr));
+      loadHistoryUI();
     }
 
     window.clearHistory = function () {
