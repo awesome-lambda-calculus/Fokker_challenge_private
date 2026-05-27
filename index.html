@@ -151,7 +151,7 @@
         
         <textarea id="input" rows="6"
           class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:border-indigo-500 font-mono text-sm resize-none"
-          placeholder="Enter your term (e.g. lambda x. x, app (var 0) (var 1), etc.)"></textarea>
+          placeholder="Enter your term (e.g. lam x. x, app (var 0) (var 1), etc.)"></textarea>
 
         <div class="mt-4 flex gap-3">
           <button onclick="generateLean()" 
@@ -170,8 +170,11 @@
           <p class="text-sm text-gray-500 mb-2">Examples:</p>
           <div class="flex flex-wrap gap-2">
             <button onclick="loadExample('λx.x')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">λx.x</button>
-            <button onclick="loadExample('app (var 0) (var 1)')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">app (var 0) (var 1)</button>
+            <!-- <button onclick="loadExample('app (var 0) (var 1)')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">app (var 0) (var 1)</button> -->
             <button onclick="loadExample('lam (app (var 0) (var 0))')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">lam (app (var 0) (var 0))</button>
+            <button onclick="loadExample('λλ0(λ1)')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">λλ0(λ1)</button>
+            <button onclick="loadExample('λλ1 1 (λλ1)')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">λλ1 1 (λλ1)</button>
+            <button onclick="loadExample('λ0 (0 (λ1)) (λ1)')" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg">λ0 (0 (λ1)) (λ1)</button>
           </div>
         </div>
         <!-- Search history -->
