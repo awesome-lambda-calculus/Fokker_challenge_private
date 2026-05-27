@@ -164,7 +164,7 @@ W = λλ1 0 0 = α α(α(α(α α) α))
 I = λ0 = α(α(α(α α) α))(α(α α) α)
 F = λλ0 = α α α(α(α α)(α α)(α α)) α
 S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...</code></pre>
-        <p>The Fokker size of a closed term is the number of abstractions and applications it contains when written.</p>
+        <p>The Fokker size of a closed term is the number of abstractions and applications.</p>
         <pre class="w-full max-w-full rounded-xl bg-slate-950 text-slate-100 p-4 overflow-x-auto text-sm leading-relaxed"><code>def fokker_size : (Term String) -> Nat
 | bvar _ => 0
 | fvar _ => 0
@@ -173,7 +173,7 @@ S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...</code></pre>
         <div>
           <h3 class="text-xl font-semibold text-slate-900">Our goal</h3>
           <ul class="list-disc list-inside mt-3 space-y-2 text-slate-700">
-            <li>Verify α is smallest basis</li>
+            <li>Verify α is smallest basis OR</li>
             <li>Find the smallest basis</li>
           </ul>
         </div>
@@ -188,6 +188,7 @@ S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...</code></pre>
             <li><strong>Decider/All0.lean</strong>: In de Bruijn index, if every number is 0, it couldn't be basis — one variable is not enough, unable to construct complicated terms.</li>
           </ul>
         </div>
+        <!--
         <div>
           <h3 class="text-xl font-semibold text-slate-900">What we are going to do</h3>
           <p>There are still undecided terms. We may prove them one by one, or discover new deciders.</p>
@@ -198,23 +199,28 @@ S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...</code></pre>
             <li>Find more deciders</li>
           </ul>
         </div>
+        !-->
         <div>
           <h3 class="text-xl font-semibold text-slate-900">Next steps</h3>
           <ol class="list-decimal list-inside mt-3 space-y-2 text-slate-700">
             <li>Verify "Two vars are not enough"</li>
             <li>Filter terms always terminate</li>
             <li>Filter terms always diverge</li>
-            <li>Find more deciders</li>
+            <li>Find more deciders: especially ability to reorder variables</li>
+            <li>Investigate patterns of undecided terms</li>
           </ol>
         </div>
+        <!--
         <div>
           <h3 class="text-xl font-semibold text-slate-900">How to deal with undecided terms</h3>
           <p>Some might diverge; we haven't proved that yet.</p>
         </div>
+        !-->
         <div>
           <h3 class="text-xl font-semibold text-slate-900">AI usage</h3>
           <p>This project is quite suitable for AI-driven autonomous proof.</p>
         </div>
+        <!--
         <div>
           <h3 class="text-xl font-semibold text-slate-900">Related papers</h3>
           <p>Only 3 papers discuss single basis. We are implementing the first one, while the others are more challenging to formalize.</p>
@@ -255,6 +261,7 @@ decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])</code></pre>
           </ul>
         </div>
       </div>
+    -->
     </section>
 
     <div class="mx-auto mb-10 max-w-3xl overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-slate-200">
