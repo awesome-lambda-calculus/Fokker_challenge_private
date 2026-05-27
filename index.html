@@ -139,10 +139,33 @@
       <h1 class="text-4xl font-bold text-gray-800 mb-2 whitespace-nowrap">
         Fokker Challenge: Smallest one-point basis in Lean 4
       </h1>
-      <p class="text-gray-600">Analyze closed lambda terms by Fokker size and generate Lean 4 not_basis proofs.</p>
-      <p class="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-600">
-        Explore whether a closed lambda term of smaller Fokker size can serve as a one-point basis, verify decidable non-basis cases, and discover new proof techniques based on the current Lean 4 formalization.
+      <p class="text-gray-600">Searching for smallest one-point basis and verify in Lean4</p>
+      <div class="mt-4">
+        <a href="https://github.com/awesome-lambda-calculus/Fokker_challenge_private" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-slate-800 transition">
+          <i class="fab fa-github"></i>
+          View on GitHub
+        </a>
+      </div>
+      <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 text-left">
+        A one-point basis is a single lambda term that can generate the entire untyped lambda calculus by itself through repeated application.
       </p>
+
+      <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 text-left">The currently known smallest one-point basis for untyped lambda calculus (in terms of <strong>Fokker size</strong>) is <strong>α</strong>, discovered by John Tromp.</p>
+      <pre class="rounded-xl bg-slate-950 text-slate-100 p-4 overflow-auto text-sm mb-4 text-left"><code>α = λλλ2 0 (1 (λ1))
+B = λλλ2 (1 0) = α(α(α(α(α α) α))(α α) α)(α(α(α α)))
+C = λλλ2 0 1 = α(α α α(α α α)(α α)(α α)) α α
+K = λλ1 = α α(α(α α) α α α) α α
+W = λλ1 0 0 = α α(α(α(α α) α))
+I = λ0 = α(α(α(α α) α))(α(α α) α)
+F = λλ0 = α α α(α(α α)(α α)(α α)) α
+S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...</code></pre>
+
+      <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 text-left"><strong>Our goal:</strong></p>
+      <ul class="list-disc list-inside text-slate-600 mb-6 text-left">
+        <li>Verify α is the smallest basis</li>
+        <li>Find the smallest basis</li>
+      </ul>
+
     </div>
 
     <div class="mx-auto mb-10 max-w-3xl overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-slate-200">
@@ -162,7 +185,7 @@
           <tbody class="divide-y divide-slate-200 bg-white">
             <tr class="bg-slate-50">
               <td class="px-6 py-4 font-semibold text-slate-900">Total</td>
-              <td class="px-6 py-4 text-slate-500">All terms</td>
+              <td class="px-6 py-4 text-slate-500">All terms with Fokker size < 7 </td>
               <td class="px-6 py-4 font-semibold">5420</td>
             </tr>
             <tr>
@@ -269,7 +292,7 @@
     </div>
 
     <footer class="text-center text-gray-400 text-xs mt-12">
-      Rust + WASM • De Bruijn • Lean 4
+      Starting from May 2026
     </footer>
   </div>
 
