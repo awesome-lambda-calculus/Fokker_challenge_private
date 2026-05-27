@@ -142,6 +142,44 @@
       <p class="text-gray-600">Convert terms to Lean 4 definitions + not_basis theorems</p>
     </div>
 
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+</style>
+<table class="tg"><thead>
+  <tr>
+    <th class="tg-0pky">Total</th>
+    <th class="tg-0pky" colspan="2">5420</th>
+  </tr></thead>
+<tbody>
+  <tr>
+    <td class="tg-0pky">Proved</td>
+    <td class="tg-0pky" colspan="2">2814</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky" rowspan="4">UnProved<br>(2606)</td>
+    <td class="tg-0pky">Terminate (trival cases)</td>
+    <td class="tg-0pky">95</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">Two vars are enough<br>(high priority)</td>
+    <td class="tg-0pky">49</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">With beta-redex or eta-redex<br>(low priority)</td>
+    <td class="tg-0pky">1469<br></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky">Others (high priority)</td>
+    <td class="tg-0pky">993</td>
+  </tr>
+</tbody>
+</table>
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Input -->
       <div class="bg-white rounded-2xl shadow-lg p-8">
