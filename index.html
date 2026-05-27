@@ -151,20 +151,7 @@
       </p>
 
       <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 text-left">The currently known smallest one-point basis for untyped lambda calculus (in terms of <strong>Fokker size</strong>) is <strong>α</strong>, discovered by John Tromp.</p>
-      <pre class="rounded-xl bg-slate-950 text-slate-100 p-4 overflow-auto text-sm mb-4 text-left"><code>α = λλλ2 0 (1 (λ1))
-B = λλλ2 (1 0) = α(α(α(α(α α) α))(α α) α)(α(α(α α)))
-C = λλλ2 0 1 = α(α α α(α α α)(α α)(α α)) α α
-K = λλ1 = α α(α(α α) α α α) α α
-W = λλ1 0 0 = α α(α(α(α α) α))
-I = λ0 = α(α(α(α α) α))(α(α α) α)
-F = λλ0 = α α α(α(α α)(α α)(α α)) α
-S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...</code></pre>
 
-      <p class="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 text-left"><strong>Our goal:</strong></p>
-      <ul class="list-disc list-inside text-slate-600 mb-6 text-left">
-        <li>Verify α is the smallest basis</li>
-        <li>Find the smallest basis</li>
-      </ul>
 
     </div>
 
@@ -228,6 +215,110 @@ S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...</code></pre>
       </div>
     </div>
 
+    <section class="mt-10 rounded-3xl bg-white shadow-xl ring-1 ring-slate-200 p-8">
+      <div class="max-w-4xl mx-auto space-y-6 text-slate-700">
+        <h2 class="text-2xl font-semibold text-slate-900">Project README</h2>
+        <p>The currently known smallest one-point basis for untyped lambda calculus (in terms of <strong>Fokker size</strong>) is <strong>α</strong>, discovered by John Tromp.</p>
+        <pre class="w-full max-w-full rounded-xl bg-slate-950 text-slate-100 p-4 overflow-x-auto text-sm leading-relaxed"><code>α = λλλ2 0 (1 (λ1))
+B = λλλ2 (1 0) = α(α(α(α(α α) α))(α α) α)(α(α(α α)))
+C = λλλ2 0 1 = α(α α α(α α α)(α α)(α α)) α α
+K = λλ1 = α α(α(α α) α α α) α α
+W = λλ1 0 0 = α α(α(α(α α) α))
+I = λ0 = α(α(α(α α) α))(α(α α) α)
+F = λλ0 = α α α(α(α α)(α α)(α α)) α
+S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...</code></pre>
+        <p>The Fokker size of a closed term is the number of abstractions and applications it contains when written.</p>
+        <pre class="w-full max-w-full rounded-xl bg-slate-950 text-slate-100 p-4 overflow-x-auto text-sm leading-relaxed"><code>def fokker_size : (Term String) -> Nat
+| bvar _ => 0
+| fvar _ => 0
+| abs t => 1 + fokker_size t
+| app t1 t2 => 1 + fokker_size t1 + fokker_size t2</code></pre>
+        <div>
+          <h3 class="text-xl font-semibold text-slate-900">Our goal</h3>
+          <ul class="list-disc list-inside mt-3 space-y-2 text-slate-700">
+            <li>Verify α is smallest basis</li>
+            <li>Find the smallest basis</li>
+          </ul>
+        </div>
+        <p>We use Lean 4 to formalize that all smaller closed lambda terms can't be a basis. Our proof is based on <a href="https://github.com/leanprover/cslib" class="text-indigo-600 hover:underline">cslib</a>.</p>
+        <div>
+          <h3 class="text-xl font-semibold text-slate-900">What we have done</h3>
+          <p>We have formalized 3 simple deciders, which have proven 1421 terms could not be basis.</p>
+          <ul class="list-disc list-inside mt-3 space-y-2 text-slate-700">
+            <li><strong>Decider/EveryBvarUsed.lean</strong>: If every var is used, it couldn't be basis — unable to discard variable.</li>
+            <li><strong>Decider/NoDuplicate.lean</strong>: If every var is used only 0 times or 1 time, it couldn't be basis — unable to duplicate variable.</li>
+            <li><strong>Decider/All0.lean</strong>: In de Bruijn index, if every number is 0, it couldn't be basis — one variable is not enough, unable to construct complicated terms.</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold text-slate-900">What we are going to do</h3>
+          <p>There are still undecided terms. We may prove them one by one, or discover new deciders.</p>
+          <ul class="list-disc list-inside mt-3 space-y-2 text-slate-700">
+            <li>Verify "Two vars are not enough", which will cover 78 terms</li>
+            <li>Filter terms that always terminate</li>
+            <li>Filter terms that always diverge</li>
+            <li>Find more deciders</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold text-slate-900">Next steps</h3>
+          <ol class="list-decimal list-inside mt-3 space-y-2 text-slate-700">
+            <li>Verify "Two vars are not enough"</li>
+            <li>Filter terms always terminate</li>
+            <li>Filter terms always diverge</li>
+            <li>Find more deciders</li>
+          </ol>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold text-slate-900">How to deal with undecided terms</h3>
+          <p>Some might diverge; we haven't proved that yet.</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold text-slate-900">AI usage</h3>
+          <p>This project is quite suitable for AI-driven autonomous proof.</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold text-slate-900">Related papers</h3>
+          <p>Only 3 papers discuss single basis. We are implementing the first one, while the others are more challenging to formalize.</p>
+          <ul class="list-disc list-inside mt-3 space-y-2 text-slate-700">
+            <li><a href="https://doi.org/10.1007/11560586_32" class="text-indigo-600 hover:underline">Rick Statman — Two Variables Are Not Enough</a></li>
+            <li><a href="https://github.com/tromp/AIT/blob/master/Bases.lhs" class="text-indigo-600 hover:underline">John Tromp — AIT Bases</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold text-slate-900">Encoding</h3>
+          <p>We have thousands of terms requiring individual analysis, so an intuitive encoding scheme is necessary.</p>
+          <pre class="w-full max-w-full rounded-xl bg-slate-950 text-slate-100 p-4 overflow-x-auto text-sm leading-relaxed"><code>encode(λM) = L encode(M)
+
+encode(M N) = A encode(M) encode(N)
+
+encode(i) = i</code></pre>
+          <pre class="w-full max-w-full rounded-xl bg-slate-950 text-slate-100 p-4 overflow-x-auto text-sm leading-relaxed"><code>cd rust-scripts
+cargo run --bin encode "λλ2 (1 2)"
+
+def Term_LLA2A12: Term String := .abs (.abs (.app (.bvar 2) (.app (.bvar 1) (.bvar 2))))
+
+theorem LLA2A12_is_not_basis : not_basis Term_LLA2A12 := by sorry</code></pre>
+          <pre class="w-full max-w-full rounded-xl bg-slate-950 text-slate-100 p-4 overflow-x-auto text-sm leading-relaxed"><code># Well encoded term results []
+lake exe decode LA0L1
+
+decoded: (λ0 (λ1), [])</code></pre>
+          <pre class="w-full max-w-full rounded-xl bg-slate-950 text-slate-100 p-4 overflow-x-auto text-sm leading-relaxed"><code># Irrelevant suffixes will be ignored
+lake exe decode LA0L1_is_not_basis
+
+decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])</code></pre>
+        </div>
+        <div>
+          <h3 class="text-xl font-semibold text-slate-900">References</h3>
+          <ul class="list-disc list-inside mt-3 space-y-2 text-slate-700">
+            <li><a href="https://github.com/tromp/AIT/blob/master/Bases.lhs" class="text-indigo-600 hover:underline">Legrand, Remi. A basis result in combinatory logic.</a></li>
+            <li><a href="https://esolangs.org/wiki/Closed_lambda_term" class="text-indigo-600 hover:underline">Closed lambda term — Esolangs</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Combinatory_logic" class="text-indigo-600 hover:underline">Combinatory logic — Wikipedia</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Input -->
       <div class="bg-white rounded-2xl shadow-lg p-8">
@@ -287,7 +378,7 @@ S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...</code></pre>
         <div id="has-eta-redex" class="mt-4 text-sm text-center text-gray-500"></div>
         <div id="difficulty" class="mt-4 text-sm text-center text-gray-500"></div>
         <div id="priority" class="mt-4 text-sm text-center text-gray-500"></div>
-        <pre id="lean4template" class="bg-gray-900 text-green-400 p-6 rounded-xl overflow-auto max-h-[500px] text-sm leading-relaxed"></pre>
+        <pre id="lean4template" class="w-full max-w-full bg-gray-900 text-green-400 p-6 rounded-xl overflow-x-auto overflow-y-auto max-h-[500px] text-sm leading-relaxed"></pre>
       </div>
     </div>
 
@@ -309,7 +400,6 @@ S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...</code></pre>
       document.getElementById('fokker_size').innerHTML = '';
       document.getElementById('debruijn').innerHTML = '';
       document.getElementById('encoded').innerHTML = '';
-      document.getElementById('fokker_size').innerHTML = '';
       document.getElementById('has-beta-redex').innerHTML = '';
       document.getElementById('has-eta-redex').innerHTML = '';
       document.getElementById('difficulty').innerHTML = '';
