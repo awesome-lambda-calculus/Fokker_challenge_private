@@ -21,6 +21,9 @@
         const response2 = await fetch("./FokkerChallenge/GenFinite/finite.json");
         window.finite_terms= await response2.json();
 
+        const response3 = await fetch("./undecided_terms.json");
+        window.undecided_terms= await response3.json();
+
         async function run() {
             await init(); // Initialize WASM
 
@@ -429,10 +432,9 @@ decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])</code></pre>
       document.getElementById('priority').innerHTML = '';
     }
 
-    window.feelLuckyTerms = window.feelLuckyTerms || [];
 
     function feelLucky() {
-      const terms = window.feelLuckyTerms || [];
+      const terms = window.undecided_terms || []; // Feel lucky only among undecided terms
       const status = document.getElementById('status');
 
       if (!terms.length) {
@@ -444,7 +446,7 @@ decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])</code></pre>
 
       const randomTerm = terms[Math.floor(Math.random() * terms.length)];
       document.getElementById('input').value = randomTerm;
-      generateLean();
+      window.generateLean();
     }
 
     // Search history helpers (uses localStorage)
