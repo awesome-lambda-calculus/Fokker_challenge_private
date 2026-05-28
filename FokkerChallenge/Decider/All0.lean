@@ -4,9 +4,8 @@ import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullEta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBetaEtaConfluence
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.LcAt
 import Mathlib.Data.Set.Card
-import FokkerChallenge.Basic
 import FokkerChallenge.EnhancedCslib.CountBvar
-import FokkerChallenge.FvarSubset
+import FokkerChallenge.EnhancedCslib.FvarSubset
 
 namespace Cslib
 
@@ -188,7 +187,7 @@ apply no_fvar_inside_abs_of_empty_fv at h
 tauto
 
 theorem xi_preserves_all0_no_fvar_inside_abs {R: Term String → Term String → Prop} :
-  r_preserves_fvar_subset R ->
+  r_preserves_fvar_subset (Xi R) ->
   r_preserves all0_no_fvar_inside_abs R →
   r_preserves all0_no_fvar_inside_abs (Xi R) := by
 intros hsubset hR M N hxi hnd
@@ -210,7 +209,6 @@ induction hxi with
                   simp_all
                   obtain ⟨_, hnd⟩ := hnd
                   have hx: Xi R M.abs N.abs := by apply Xi.abs _ h
-                  apply xi_preserves_fvar_subset at hsubset
                   specialize hsubset _ _ hx
                   unfold fv at hsubset
                   rw [hnd] at hsubset

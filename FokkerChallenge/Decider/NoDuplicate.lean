@@ -4,7 +4,7 @@ import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullEta
 import Cslib.Languages.LambdaCalculus.LocallyNameless.Untyped.FullBetaEtaConfluence
 import Mathlib.Data.Set.Card
 import FokkerChallenge.EnhancedCslib.CountFvar
-import FokkerChallenge.FvarSubset
+import FokkerChallenge.EnhancedCslib.FvarSubset
 
 namespace Cslib
 
@@ -187,7 +187,7 @@ simp at hcfv
 omega
 
 
-theorem xi_preserves_fvar {R}:  r_preserves_fvar_subset R ->
+theorem xi_preserves_fvar {R}:  r_preserves_fvar_subset (Xi R) ->
                                 r_preserves_fvar R ->
                                 r_preserves_fvar (Xi R) := by
 intros g hR M N x hxi hcfv hnd
@@ -208,7 +208,6 @@ induction hxi with
                     rw [<- count_fvar_eq_zero_of_not_in_fv] at hcfv
                     intros h
                     apply hcfv
-                    apply xi_preserves_fvar_subset at g
                     apply g <;> assumption
 | appR _ _ ih =>  unfold count_fvar at hcfv
                   unfold count_fvar
@@ -225,7 +224,6 @@ induction hxi with
                     rw [<- count_fvar_eq_zero_of_not_in_fv] at hcfv
                     intros h
                     apply hcfv
-                    apply xi_preserves_fvar_subset at g
                     apply g <;> assumption
 | abs xs _ ih =>  rename_i M N _
                   have h4 : ∃ y: String, y ∉ insert x xs ∪ N.fv ∪ M.fv := by apply Finset.exists_not_mem_of_card_lt_enatCard; simp
@@ -250,7 +248,7 @@ induction hxi with
 
 theorem xi_preserves_no_duplicate {R: Term String → Term String → Prop} :
   r_preserves_fvar R ->
-  r_preserves_fvar_subset R ->
+  r_preserves_fvar_subset (Xi R) ->
   r_preserves no_duplicate R →
   r_preserves no_duplicate (Xi R) := by
 intros _ g hR M N hxi hnd

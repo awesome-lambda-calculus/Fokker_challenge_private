@@ -1,0 +1,18 @@
+{
+  "search_pattern": "_is_not_basis",
+  "search_time": "2026-05-25 20:01:43",
+  "folder_scanned": "/home/hyper/Fokker_challenge",
+  "total_files_with_matches": 1,
+  "total_matches_found": 1,
+  "results": [
+    {
+      "filepath": "../FokkerChallenge/GenFinite/LA0L1.lean",
+      "matches": [
+        {
+          "full_word": "LA0L1_is_not_basis",
+          "extracted_prefix": "LA0L1"
+        }
+      ]
+    }
+  ]
+}
