@@ -15,13 +15,12 @@
     <script type="module">
         import init, { parse_term_in_any_format } from './rust-scripts/pkg/rust_scripts.js';
 
-        async function loadJson() {
-          const response = await fetch("./rust-scripts/basis_extract_result.json");
-          window.proved_terms= await response.json();
+        const response = await fetch("./rust-scripts/basis_extract_result.json");
+        window.proved_terms= await response.json();
 
-          const response2 = await fetch("./FokkerChallenge/GenFinite/finite.json");
-          window.finite_terms= await response2.json();
-        }
+        const response2 = await fetch("./FokkerChallenge/GenFinite/finite.json");
+        window.finite_terms= await response2.json();
+
         async function run() {
             await init(); // Initialize WASM
 
@@ -130,7 +129,6 @@
             }
         }
 
-        loadJson();
         run();
     </script>
 
