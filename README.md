@@ -1,6 +1,6 @@
 # Fokker_challenge
 
-The currently known smallest one-point basis[^6] for untyped lambda calculus (in terms of **Fokker size**) is **α** , discovered by John Tromp[^4].
+The currently known smallest one-point basis[^5] for untyped lambda calculus (in terms of **Fokker size**) is **α** , discovered by John Tromp[^4] and Mtv Europe[^10].
 
 ```
 α = λλλ2 0 (1 (λ1))
@@ -10,7 +10,7 @@ K = λλ1 = α α(α(α α) α α α) α(α α)
 W = λλ1 0 0 = α α(α(α(α α) α))
 I = λ0 = α(α(α(α α) α))(α(α α) α)
 F = λλ0 = α α α(α(α α)(α α)(α α)) α
-S = λλλ (2 0) (1 0) = B (B W) (B B C) = ...
+S = λλλ (2 0) (1 0) = α(α(α α(α α(α α))(α(α(α α(α α))))))α α
 ```
 
 The Fokker size of a closed term is the number of abstractions and applications it contains when written.
@@ -76,18 +76,10 @@ This project is quite suitable for AI-Driven Autonomous Proof.
 
 ### Related papers
 
-Only 3 papers discuss single basis.
+Only 3 papers discuss single basis: [^1] [^2] [^3] 
 
-We are implementing [^1]
+There are also some online discussion: [^6] [^7] [^8]
 
-[^2] and [^3] are so hard to implement.
-
-There are also some online discussion: [^5] [^7] [^8]
-
-## Contributors ✨
-
-<!-- ALL-CONTRIBUTORS-LIST:START -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## Encoding
 
@@ -132,9 +124,10 @@ decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])
 [^2]: Statman, Richard. "Combinators hereditarily of order two." (1988).
 [^3]: Rick Statman. **Two Variables Are Not Enough**. In *Proceedings of the 9th Italian Conference on Theoretical Computer Science (ICTCS 2005)*, Lecture Notes in Computer Science, vol. 3701, pp. 406–409, Springer, 2005.  [DOI](https://doi.org/10.1007/11560586_32)
 [^4]: https://github.com/tromp/AIT/blob/master/Bases.lhs
-[^5]: https://esolangs.org/wiki/Closed_lambda_term
-[^6]: https://en.wikipedia.org/wiki/Combinatory_logic
+[^5]: https://en.wikipedia.org/wiki/Combinatory_logic
+[^6]: https://esolangs.org/wiki/Closed_lambda_term
 [^7]: https://mathoverflow.net/questions/415334/do-combinatory-logic-bases-need-a-function-of-3-variables#
 [^8]: https://cstheory.stackexchange.com/questions/36276/incomplete-basis-of-combinators
 [^9]: https://tromp.github.io/cl/Binary_lambda_calculus.html
+[^10]: http://frox25.no-ip.org/~mtve/wiki/LambdaOnePoint.html 
 
