@@ -349,14 +349,19 @@ decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])</code></pre>
           class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:border-indigo-500 font-mono text-sm resize-none"
           placeholder="Enter your term (e.g. lam x. x, app (var 0) (var 1), etc.)"></textarea>
 
-        <div class="mt-4 flex gap-3">
+        <div class="mt-4 flex gap-3 flex-wrap">
           <button onclick="generateLean()" 
-            class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-xl transition">
+            class="flex-1 min-w-[140px] bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-xl transition">
             <i class="fas fa-magic mr-2"></i> Search
           </button>
           
+          <button onclick="feelLucky()" title="Choose random from undecided terms" aria-label="Choose random from undecided terms"
+            class="min-w-[140px] bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 px-6 rounded-xl transition">
+            <i class="fas fa-dice mr-2"></i> Feel lucky
+          </button>
+
           <button onclick="clearAll()" 
-            class="px-6 py-3 border border-gray-300 hover:bg-gray-100 rounded-xl transition">
+            class="min-w-[120px] px-6 py-3 border border-gray-300 hover:bg-gray-100 rounded-xl transition">
             Clear
           </button>
         </div>
@@ -422,6 +427,24 @@ decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])</code></pre>
       document.getElementById('has-eta-redex').innerHTML = '';
       document.getElementById('difficulty').innerHTML = '';
       document.getElementById('priority').innerHTML = '';
+    }
+
+    window.feelLuckyTerms = window.feelLuckyTerms || [];
+
+    function feelLucky() {
+      const terms = window.feelLuckyTerms || [];
+      const status = document.getElementById('status');
+
+      if (!terms.length) {
+        if (status) {
+          status.innerHTML = `<span class="text-yellow-600">No "feel lucky" terms are configured yet.</span>`;
+        }
+        return;
+      }
+
+      const randomTerm = terms[Math.floor(Math.random() * terms.length)];
+      document.getElementById('input').value = randomTerm;
+      generateLean();
     }
 
     // Search history helpers (uses localStorage)
