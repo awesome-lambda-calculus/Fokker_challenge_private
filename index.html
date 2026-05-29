@@ -188,18 +188,6 @@ S = λλλ (2 0) (1 0) = α(α(α α(α α(α α))(α(α(α α(α α))))))α α 
             <li><strong>Decider/All0.lean</strong>: In de Bruijn index, if every number is 0, it couldn't be basis — one variable is not enough, unable to construct complicated terms.</li>
           </ul>
         </div>
-        <!--
-        <div>
-          <h3 class="text-xl font-semibold text-slate-900">What we are going to do</h3>
-          <p>There are still undecided terms. We may prove them one by one, or discover new deciders.</p>
-          <ul class="list-disc list-inside mt-3 space-y-2 text-slate-700">
-            <li>Verify "Two vars are not enough", which will cover 78 terms</li>
-            <li>Filter terms that always terminate</li>
-            <li>Filter terms that always diverge</li>
-            <li>Find more deciders</li>
-          </ul>
-        </div>
-        !-->
         <div>
           <h3 class="text-xl font-semibold text-slate-900">Next steps</h3>
           <ol class="list-decimal list-inside mt-3 space-y-2 text-slate-700">
@@ -211,12 +199,6 @@ S = λλλ (2 0) (1 0) = α(α(α α(α α(α α))(α(α(α α(α α))))))α α 
             <li>Investigate patterns of undecided terms</li>
           </ol>
         </div>
-        <!--
-        <div>
-          <h3 class="text-xl font-semibold text-slate-900">How to deal with undecided terms</h3>
-          <p>Some might diverge; we haven't proved that yet.</p>
-        </div>
-        !-->
         <div>
           <h3 class="text-xl font-semibold text-slate-900">Looking for Participation</h3>
           <p> This repository is an intentional experiment in AI-native development. </p>
@@ -233,38 +215,6 @@ S = λλλ (2 0) (1 0) = α(α(α α(α α(α α))(α(α(α α(α α))))))α α 
               <li><strong>Mass Analysis</strong>: Systematically analyze thousands of undecided terms in parallel.</li>
           </ol>
         </div>
-        <!--
-        <div>
-          <h3 class="text-xl font-semibold text-slate-900">Related papers</h3>
-          <p>Only 3 papers discuss single basis. We are implementing the first one, while the others are more challenging to formalize.</p>
-          <ul class="list-disc list-inside mt-3 space-y-2 text-slate-700">
-            <li><a href="https://doi.org/10.1007/11560586_32" class="text-indigo-600 hover:underline">Rick Statman — Two Variables Are Not Enough</a></li>
-            <li><a href="https://github.com/tromp/AIT/blob/master/Bases.lhs" class="text-indigo-600 hover:underline">John Tromp — AIT Bases</a></li>
-          </ul>
-        </div>
-        <div>
-          <h3 class="text-xl font-semibold text-slate-900">Encoding</h3>
-          <p>We have thousands of terms requiring individual analysis, so an intuitive encoding scheme is necessary.</p>
-          <pre class="w-full max-w-full rounded-xl bg-slate-950 text-slate-100 p-4 overflow-x-auto text-sm leading-relaxed"><code>encode(λM) = L encode(M)
-
-encode(M N) = A encode(M) encode(N)
-
-encode(i) = i</code></pre>
-          <pre class="w-full max-w-full rounded-xl bg-slate-950 text-slate-100 p-4 overflow-x-auto text-sm leading-relaxed"><code>cd rust-scripts
-cargo run --bin encode "λλ2 (1 2)"
-
-def Term_LLA2A12: Term String := .abs (.abs (.app (.bvar 2) (.app (.bvar 1) (.bvar 2))))
-
-theorem LLA2A12_is_not_basis : not_basis Term_LLA2A12 := by sorry</code></pre>
-          <pre class="w-full max-w-full rounded-xl bg-slate-950 text-slate-100 p-4 overflow-x-auto text-sm leading-relaxed"><code># Well encoded term results []
-lake exe decode LA0L1
-
-decoded: (λ0 (λ1), [])</code></pre>
-          <pre class="w-full max-w-full rounded-xl bg-slate-950 text-slate-100 p-4 overflow-x-auto text-sm leading-relaxed"><code># Irrelevant suffixes will be ignored
-lake exe decode LA0L1_is_not_basis
-
-decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])</code></pre>
-        </div>
         <div>
           <h3 class="text-xl font-semibold text-slate-900">References</h3>
           <ul class="list-disc list-inside mt-3 space-y-2 text-slate-700">
@@ -274,7 +224,6 @@ decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])</code></pre>
           </ul>
         </div>
       </div>
-    -->
     </section>
 
     <br>
@@ -404,7 +353,16 @@ decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])</code></pre>
         <div id="has-eta-redex" class="mt-4 text-sm text-center text-gray-500"></div>
         <div id="difficulty" class="mt-4 text-sm text-center text-gray-500"></div>
         <div id="priority" class="mt-4 text-sm text-center text-gray-500"></div>
-        <pre id="lean4template" class="w-full max-w-full bg-gray-900 text-green-400 p-6 rounded-xl overflow-x-auto overflow-y-auto max-h-[500px] text-sm leading-relaxed"></pre>
+        
+        <!-- Interactive Code Wrapper with Dynamic Copy Button -->
+        <div class="relative mt-4 group">
+          <button id="copyBtn" onclick="copyToClipboard()" 
+            class="absolute top-3 right-3 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium border border-gray-700 flex items-center gap-1.5 transition shadow-sm"
+            title="Copy to clipboard">
+            <i class="fas fa-copy"></i> Copy
+          </button>
+          <pre id="lean4template" class="w-full max-w-full bg-gray-900 text-green-400 p-6 rounded-xl overflow-x-auto overflow-y-auto max-h-[500px] text-sm leading-relaxed"></pre>
+        </div>
       </div>
     </div>
 
@@ -447,6 +405,26 @@ decoded: (λ0 (λ1), [_, I, S, _, N, O, T, _, B, A, S, I, S])</code></pre>
       const randomTerm = terms[Math.floor(Math.random() * terms.length)];
       document.getElementById('input').value = randomTerm;
       window.generateLean();
+    }
+
+    // Dynamic Clipboard Implementation
+    function copyToClipboard() {
+      const text = document.getElementById('lean4template').textContent;
+      if (!text) return;
+
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyBtn');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check text-emerald-400"></i> Copied!';
+        btn.classList.add('border-emerald-600', 'bg-slate-900');
+        
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+          btn.classList.remove('border-emerald-600', 'bg-slate-900');
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy code text: ', err);
+      });
     }
 
     // Search history helpers (uses localStorage)
