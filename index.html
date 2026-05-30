@@ -189,7 +189,8 @@ S = λλλ (2 0) (1 0) = α(α(α α(α α(α α))(α(α(α α(α α))))))α α 
         <p>Our proof is based on <a href="https://github.com/leanprover/cslib" class="text-indigo-600 hover:underline">cslib</a>.</p>
         <div>
           <h3 class="text-xl font-semibold text-slate-900">What we have done</h3>
-          <p>We have formalized 3 simple deciders, which have proven 1421 terms could not be basis.</p>
+          <br>
+          <p>There are 5420 terms with Fokker size < 7. We have proved 51% are not bases by 3 simple deciders.</p>
           <ul class="list-disc list-inside mt-3 space-y-2 text-slate-700">
             <li><strong>Decider/EveryBvarUsed.lean</strong>: If every var is used, it couldn't be basis — unable to discard variable.</li>
             <li><strong>Decider/NoDuplicate.lean</strong>: If every var is used only 0 times or 1 time, it couldn't be basis — unable to duplicate variable.</li>
@@ -221,6 +222,7 @@ S = λλλ (2 0) (1 0) = α(α(α α(α α(α α))(α(α(α α(α α))))))α α 
               <li><strong>Automated Search Unknown Trival cases</strong></li>
               <li><strong>Pattern Recognition</strong>: Analyze undecided terms to identify common structures or properties, guiding the discovery of new deciders. </li>
               <li><strong>Mass Analysis</strong>: Systematically analyze thousands of undecided terms in parallel.</li>
+              <li>Our project is an excellent platform for testing LLMs' capabilities.</li>
           </ol>
         </div>
         <!--
