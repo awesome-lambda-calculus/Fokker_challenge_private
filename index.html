@@ -24,6 +24,10 @@
         const response3 = await fetch("./undecided_terms.json");
         window.undecided_terms= await response3.json();
 
+        document.getElementById("proved-count").textContent = 2813 + window.proved_terms.total_matches_found;
+        document.getElementById("unproved-count").textContent = 2607 - window.proved_terms.total_matches_found;
+        document.getElementById("others-count").textContent = 994 - window.proved_terms.total_matches_found;
+
         async function run() {
             await init(); // Initialize WASM
 
@@ -253,12 +257,12 @@ S = λλλ (2 0) (1 0) = α(α(α α(α α(α α))(α(α(α α(α α))))))α α 
             <tr>
               <td class="px-6 py-4 font-semibold text-slate-900">Proved</td>
               <td class="px-6 py-4 text-slate-500">Verified by the <a href="https://github.com/awesome-lambda-calculus/Fokker_challenge_private/tree/main/FokkerChallenge/Decider" class="text-emerald-600 hover:underline">3 deciders</a></td>
-              <td class="px-6 py-4 font-semibold">2814</td>
+              <td id="proved-count" class="px-6 py-4 font-semibold">2814</td>
             </tr>
             <tr class="bg-slate-50">
               <td class="px-6 py-4 font-semibold text-slate-900">Unproved</td>
               <td class="px-6 py-4 text-slate-500">Remaining cases</td>
-              <td class="px-6 py-4 font-semibold">2606</td>
+              <td id="unproved-count" class="px-6 py-4 font-semibold">2606</td>
             </tr>
             <tr>
               <td class="px-6 py-4 pl-10 text-slate-900">
@@ -280,7 +284,7 @@ S = λλλ (2 0) (1 0) = α(α(α α(α α(α α))(α(α(α α(α α))))))α α 
             <tr class="bg-slate-50">
               <td class="px-6 py-4 pl-10 text-slate-900">Others</td>
               <td class="px-6 py-4 text-amber-600">Priority: high; Difficulty: unknown</td>
-              <td class="px-6 py-4">993</td>
+              <td id="others-count" class="px-6 py-4">993</td>
             </tr>
           </tbody>
         </table>
